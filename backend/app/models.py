@@ -4,6 +4,40 @@ from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
 
+# 新增以下3行 ↓↓↓
+from sqlalchemy.types import TypeDecorator, CHAR
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+
+
+# 新增：自定义UUID类型（适配SQLite/PostgreSQL）
+class UUID(TypeDecorator):
+    impl = CHAR
+    cache_ok = True
+
+    def load_dialect_impl(self, dialect):
+        # PostgreSQL用原生UUID，SQLite转为CHAR(36)字符串存储
+        if dialect.name == "postgresql":
+            return dialect.type_descriptor(PG_UUID())
+        else:
+            return dialect.type_descriptor(CHAR(36))
+
+    def process_bind_param(self, value, dialect):
+        # 存入数据库时：UUID对象转字符串
+        if value is None:
+            return value
+        return str(value) if isinstance(value, uuid.UUID) else value
+
+    def process_result_value(self, value, dialect):
+        # 从数据库读取时：字符串转回UUID对象
+        if value is None:
+            return value
+        try:
+            return uuid.UUID(value)
+        except ValueError:
+            return value
+
+
+
 # Shared properties
 class UserBase(SQLModel):
     email: EmailStr = Field(unique=True, index=True, max_length=255)
@@ -41,7 +75,7 @@ class UpdatePassword(SQLModel):
 
 # Database model, database table inferred from class name
 class User(UserBase, table=True):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True,sa_type=UUID())
     hashed_password: str
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
 
@@ -74,9 +108,9 @@ class ItemUpdate(ItemBase):
 
 # Database model, database table inferred from class name
 class Item(ItemBase, table=True):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True,sa_type=UUID())
     owner_id: uuid.UUID = Field(
-        foreign_key="user.id", nullable=False, ondelete="CASCADE"
+        foreign_key="user.id", nullable=False, ondelete="CASCADE",sa_type=UUID()
     )
     owner: User | None = Relationship(back_populates="items")
 
