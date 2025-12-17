@@ -2,6 +2,7 @@ import uuid
 
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
+from datetime import date
 
 
 # 新增以下3行 ↓↓↓
@@ -145,3 +146,115 @@ class TokenPayload(SQLModel):
 class NewPassword(SQLModel):
     token: str
     new_password: str = Field(min_length=8, max_length=128)
+
+
+class RenterBase(SQLModel):
+    full_name: str = Field(min_length=1, max_length=255)
+    phone: str = Field(min_length=7, max_length=20)
+    email: EmailStr | None = Field(default=None, max_length=255)
+    driver_license_number: str = Field(min_length=4, max_length=64)
+    driver_license_state: str = Field(default="NY", max_length=2)
+    address: str | None = Field(default=None, max_length=255)
+
+
+class RenterCreate(RenterBase):
+    pass
+
+
+class RenterUpdate(SQLModel):
+    full_name: str | None = Field(default=None, max_length=255)
+    phone: str | None = Field(default=None, max_length=20)
+    email: EmailStr | None = Field(default=None, max_length=255)
+    driver_license_number: str | None = Field(default=None, max_length=64)
+    driver_license_state: str | None = Field(default=None, max_length=2)
+    address: str | None = Field(default=None, max_length=255)
+
+
+class Renter(RenterBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, sa_type=UUID())
+    leases: list["PlateLease"] = Relationship(back_populates="renter", cascade_delete=True)
+
+
+class RenterPublic(RenterBase):
+    id: uuid.UUID
+
+
+class RentersPublic(SQLModel):
+    data: list[RenterPublic]
+    count: int
+
+
+class LicensePlateBase(SQLModel):
+    plate_number: str = Field(unique=True, index=True, min_length=2, max_length=16)
+    plate_state: str = Field(default="NY", max_length=2)
+    purchase_date: date
+    purchase_amount: float
+    status: str = Field(default="available", max_length=32)
+    notes: str | None = Field(default=None, max_length=255)
+
+
+class LicensePlateCreate(LicensePlateBase):
+    pass
+
+
+class LicensePlateUpdate(SQLModel):
+    plate_number: str | None = Field(default=None, max_length=16)
+    plate_state: str | None = Field(default=None, max_length=2)
+    purchase_date: date | None = None
+    purchase_amount: float | None = None
+    status: str | None = Field(default=None, max_length=32)
+    notes: str | None = Field(default=None, max_length=255)
+
+
+class LicensePlate(LicensePlateBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, sa_type=UUID())
+    leases: list["PlateLease"] = Relationship(back_populates="plate", cascade_delete=True)
+
+
+class LicensePlatePublic(LicensePlateBase):
+    id: uuid.UUID
+
+
+class LicensePlatesPublic(SQLModel):
+    data: list[LicensePlatePublic]
+    count: int
+
+
+class PlateLeaseBase(SQLModel):
+    start_date: date
+    end_date: date | None = None
+    rent_amount: float
+    frequency: str = Field(default="monthly", max_length=16)
+    status: str = Field(default="active", max_length=32)
+
+
+class PlateLeaseCreate(PlateLeaseBase):
+    plate_id: uuid.UUID
+    renter_id: uuid.UUID
+
+
+class PlateLeaseUpdate(SQLModel):
+    start_date: date | None = None
+    end_date: date | None = None
+    rent_amount: float | None = None
+    frequency: str | None = Field(default=None, max_length=16)
+    status: str | None = Field(default=None, max_length=32)
+
+
+class PlateLease(PlateLeaseBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, sa_type=UUID())
+    plate_id: uuid.UUID = Field(foreign_key="licenseplate.id", nullable=False, ondelete="CASCADE", sa_type=UUID())
+    renter_id: uuid.UUID = Field(foreign_key="renter.id", nullable=False, ondelete="CASCADE", sa_type=UUID())
+    plate: LicensePlate | None = Relationship(back_populates="leases")
+    renter: Renter | None = Relationship(back_populates="leases")
+
+
+class PlateLeasePublic(PlateLeaseBase):
+    id: uuid.UUID
+    plate_id: uuid.UUID
+    renter_id: uuid.UUID
+
+
+class PlateLeasesPublic(SQLModel):
+    data: list[PlateLeasePublic]
+    count: int
