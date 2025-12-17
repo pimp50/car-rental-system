@@ -50,33 +50,35 @@ export function DataTable<TData, TValue>({
   data,
   id,
 }: DataTableProps<TData, TValue>) {
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([])
-  const [draggingColumnId, setDraggingColumnId] = useState<string | null>(null)
-
-  // Load state from localStorage on mount
-  useEffect(() => {
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(() => {
     if (id) {
-      const savedVisibility = localStorage.getItem(`${id}-visibility`)
-      const savedOrder = localStorage.getItem(`${id}-order`)
-      
-      if (savedVisibility) {
+      const saved = localStorage.getItem(`${id}-visibility`)
+      if (saved) {
         try {
-          setColumnVisibility(JSON.parse(savedVisibility))
+          return JSON.parse(saved)
         } catch (e) {
           console.error("Failed to parse saved visibility", e)
         }
       }
-      
-      if (savedOrder) {
+    }
+    return {}
+  })
+
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(() => {
+    if (id) {
+      const saved = localStorage.getItem(`${id}-order`)
+      if (saved) {
         try {
-          setColumnOrder(JSON.parse(savedOrder))
+          return JSON.parse(saved)
         } catch (e) {
           console.error("Failed to parse saved order", e)
         }
       }
     }
-  }, [id])
+    return []
+  })
+
+  const [draggingColumnId, setDraggingColumnId] = useState<string | null>(null)
 
   // Save state to localStorage on change
   useEffect(() => {
