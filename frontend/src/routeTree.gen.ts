@@ -16,6 +16,9 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
+import { Route as LayoutRentersRouteImport } from './routes/_layout/renters'
+import { Route as LayoutPlatesRouteImport } from './routes/_layout/plates'
+import { Route as LayoutLeasesRouteImport } from './routes/_layout/leases'
 import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
 
@@ -53,6 +56,21 @@ const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutRentersRoute = LayoutRentersRouteImport.update({
+  id: '/renters',
+  path: '/renters',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutPlatesRoute = LayoutPlatesRouteImport.update({
+  id: '/plates',
+  path: '/plates',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutLeasesRoute = LayoutLeasesRouteImport.update({
+  id: '/leases',
+  path: '/leases',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutItemsRoute = LayoutItemsRouteImport.update({
   id: '/items',
   path: '/items',
@@ -71,6 +89,9 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
   '/items': typeof LayoutItemsRoute
+  '/leases': typeof LayoutLeasesRoute
+  '/plates': typeof LayoutPlatesRoute
+  '/renters': typeof LayoutRentersRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
 }
@@ -81,6 +102,9 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
   '/items': typeof LayoutItemsRoute
+  '/leases': typeof LayoutLeasesRoute
+  '/plates': typeof LayoutPlatesRoute
+  '/renters': typeof LayoutRentersRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
 }
@@ -93,6 +117,9 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
   '/_layout/items': typeof LayoutItemsRoute
+  '/_layout/leases': typeof LayoutLeasesRoute
+  '/_layout/plates': typeof LayoutPlatesRoute
+  '/_layout/renters': typeof LayoutRentersRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/_layout/': typeof LayoutIndexRoute
 }
@@ -105,6 +132,9 @@ export interface FileRouteTypes {
     | '/signup'
     | '/admin'
     | '/items'
+    | '/leases'
+    | '/plates'
+    | '/renters'
     | '/settings'
     | '/'
   fileRoutesByTo: FileRoutesByTo
@@ -115,6 +145,9 @@ export interface FileRouteTypes {
     | '/signup'
     | '/admin'
     | '/items'
+    | '/leases'
+    | '/plates'
+    | '/renters'
     | '/settings'
     | '/'
   id:
@@ -126,6 +159,9 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_layout/admin'
     | '/_layout/items'
+    | '/_layout/leases'
+    | '/_layout/plates'
+    | '/_layout/renters'
     | '/_layout/settings'
     | '/_layout/'
   fileRoutesById: FileRoutesById
@@ -189,6 +225,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSettingsRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/renters': {
+      id: '/_layout/renters'
+      path: '/renters'
+      fullPath: '/renters'
+      preLoaderRoute: typeof LayoutRentersRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/plates': {
+      id: '/_layout/plates'
+      path: '/plates'
+      fullPath: '/plates'
+      preLoaderRoute: typeof LayoutPlatesRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/leases': {
+      id: '/_layout/leases'
+      path: '/leases'
+      fullPath: '/leases'
+      preLoaderRoute: typeof LayoutLeasesRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/items': {
       id: '/_layout/items'
       path: '/items'
@@ -209,6 +266,9 @@ declare module '@tanstack/react-router' {
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
   LayoutItemsRoute: typeof LayoutItemsRoute
+  LayoutLeasesRoute: typeof LayoutLeasesRoute
+  LayoutPlatesRoute: typeof LayoutPlatesRoute
+  LayoutRentersRoute: typeof LayoutRentersRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
 }
@@ -216,6 +276,9 @@ interface LayoutRouteChildren {
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
   LayoutItemsRoute: LayoutItemsRoute,
+  LayoutLeasesRoute: LayoutLeasesRoute,
+  LayoutPlatesRoute: LayoutPlatesRoute,
+  LayoutRentersRoute: LayoutRentersRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
 }

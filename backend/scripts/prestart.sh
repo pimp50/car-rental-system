@@ -3,11 +3,11 @@
 set -e
 set -x
 
-# Let the DB start
+# 让数据库启动（SQLite不需要等待）
 python app/backend_pre_start.py
 
-# Run migrations
-alembic upgrade head
+# 注释掉Alembic迁移（SQLite使用自动建表）
+# alembic upgrade head
 
-# Create initial data in DB
+# 创建初始数据
 python app/initial_data.py
