@@ -71,7 +71,9 @@ function LeasesTableContent({
       </div>
     )
   }
-  return <DataTable columns={leaseColumns} data={leases.data} id="leases-table" />
+  return (
+    <DataTable columns={leaseColumns} data={leases.data} id="leases-table" />
+  )
 }
 
 function Leases() {

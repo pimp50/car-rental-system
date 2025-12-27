@@ -1,11 +1,11 @@
 import {
   type ColumnDef,
   type ColumnOrderState,
-  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
+  type VisibilityState,
 } from "@tanstack/react-table"
 import {
   ChevronLeft,
@@ -50,19 +50,21 @@ export function DataTable<TData, TValue>({
   data,
   id,
 }: DataTableProps<TData, TValue>) {
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(() => {
-    if (id) {
-      const saved = localStorage.getItem(`${id}-visibility`)
-      if (saved) {
-        try {
-          return JSON.parse(saved)
-        } catch (e) {
-          console.error("Failed to parse saved visibility", e)
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    () => {
+      if (id) {
+        const saved = localStorage.getItem(`${id}-visibility`)
+        if (saved) {
+          try {
+            return JSON.parse(saved)
+          } catch (e) {
+            console.error("Failed to parse saved visibility", e)
+          }
         }
       }
-    }
-    return {}
-  })
+      return {}
+    },
+  )
 
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(() => {
     if (id) {

@@ -27,6 +27,7 @@ def read_plates(
     plate_number: str | None = None,
     status: str | None = None,
 ) -> Any:
+    _ = current_user
     statement = select(LicensePlate)
     if plate_number:
         statement = statement.where(LicensePlate.plate_number.contains(plate_number))
@@ -43,6 +44,7 @@ def read_plates(
 
 @router.get("/{id}", response_model=LicensePlatePublic)
 def read_plate(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -> Any:
+    _ = current_user
     plate = session.get(LicensePlate, id)
     if not plate:
         raise HTTPException(status_code=404, detail="License plate not found")
@@ -51,6 +53,7 @@ def read_plate(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) ->
 
 @router.post("/", response_model=LicensePlatePublic)
 def create_license_plate(*, session: SessionDep, current_user: CurrentUser, plate_in: LicensePlateCreate) -> Any:
+    _ = current_user
     plate = LicensePlate.model_validate(plate_in)
     session.add(plate)
     session.commit()
@@ -66,6 +69,7 @@ def update_license_plate(
     id: uuid.UUID,
     plate_in: LicensePlateUpdate,
 ) -> Any:
+    _ = current_user
     plate = session.get(LicensePlate, id)
     if not plate:
         raise HTTPException(status_code=404, detail="License plate not found")
@@ -79,10 +83,10 @@ def update_license_plate(
 
 @router.delete("/{id}")
 def delete_license_plate(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -> Message:
+    _ = current_user
     plate = session.get(LicensePlate, id)
     if not plate:
         raise HTTPException(status_code=404, detail="License plate not found")
     session.delete(plate)
     session.commit()
     return Message(message="License plate deleted successfully")
-

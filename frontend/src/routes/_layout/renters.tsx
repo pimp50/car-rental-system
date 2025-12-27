@@ -43,7 +43,9 @@ function RentersTableContent({ search }: RentersTableContentProps) {
       </div>
     )
   }
-  return <DataTable columns={renterColumns} data={renters.data} id="renters-table" />
+  return (
+    <DataTable columns={renterColumns} data={renters.data} id="renters-table" />
+  )
 }
 
 function Renters() {

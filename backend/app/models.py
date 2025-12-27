@@ -1,16 +1,12 @@
 import uuid
-
-from pydantic import EmailStr
-from sqlmodel import Field, Relationship, SQLModel
 from datetime import date
 
-
-# 新增以下3行 ↓↓↓
-from sqlalchemy.types import TypeDecorator, CHAR
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy.types import CHAR, TypeDecorator
+from sqlmodel import Field, Relationship, SQLModel
 
+from pydantic import EmailStr
 
-# 新增：自定义UUID类型（适配SQLite/PostgreSQL）
 class UUID(TypeDecorator):
     impl = CHAR
     cache_ok = True

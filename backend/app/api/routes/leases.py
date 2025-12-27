@@ -8,6 +8,7 @@ from app.api.deps import CurrentUser, SessionDep
 from app.models import (
     LicensePlate,
     Message,
+    Renter,
     PlateLease,
     PlateLeaseCreate,
     PlateLeasePublic,
@@ -29,16 +30,16 @@ def read_leases(
     renter_name: str | None = None,
     status: str | None = None,
 ) -> Any:
+    _ = current_user
     statement = select(PlateLease)
     if plate_number:
-        statement = statement.join(LicensePlate).where(LicensePlate.plate_number.contains(plate_number))
+        statement = statement.join(
+            LicensePlate, PlateLease.plate_id == LicensePlate.id
+        ).where(LicensePlate.plate_number.contains(plate_number))
     if renter_name:
-        # Avoid double join if already joined
-        if not plate_number: 
-             # If we haven't joined yet (no plate_number search), we might need to be careful with implicit joins
-             # But sqlmodel/sqlalchemy usually handles multiple joins fine
-             pass
-        statement = statement.join(Renter).where(Renter.full_name.contains(renter_name))
+        statement = statement.join(Renter, PlateLease.renter_id == Renter.id).where(
+            Renter.full_name.contains(renter_name)
+        )
     if status:
         statement = statement.where(PlateLease.status == status)
 
@@ -52,6 +53,7 @@ def read_leases(
 
 @router.get("/{id}", response_model=PlateLeasePublic)
 def read_lease(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -> Any:
+    _ = current_user
     lease = session.get(PlateLease, id)
     if not lease:
         raise HTTPException(status_code=404, detail="Lease not found")
@@ -60,6 +62,7 @@ def read_lease(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) ->
 
 @router.post("/", response_model=PlateLeasePublic)
 def create_lease(*, session: SessionDep, current_user: CurrentUser, lease_in: PlateLeaseCreate) -> Any:
+    _ = current_user
     active_statement = select(PlateLease).where(PlateLease.plate_id == lease_in.plate_id, PlateLease.status == "active")
     active = session.exec(active_statement).first()
     if active:
@@ -84,6 +87,7 @@ def update_lease(
     id: uuid.UUID,
     lease_in: PlateLeaseUpdate,
 ) -> Any:
+    _ = current_user
     lease = session.get(PlateLease, id)
     if not lease:
         raise HTTPException(status_code=404, detail="Lease not found")
@@ -103,6 +107,7 @@ def update_lease(
 
 @router.delete("/{id}")
 def delete_lease(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -> Message:
+    _ = current_user
     lease = session.get(PlateLease, id)
     if not lease:
         raise HTTPException(status_code=404, detail="Lease not found")
@@ -113,4 +118,3 @@ def delete_lease(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) 
         session.add(plate)
     session.commit()
     return Message(message="Lease deleted successfully")
-

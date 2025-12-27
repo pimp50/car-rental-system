@@ -144,6 +144,8 @@ def register_user(session: SessionDep, user_in: UserRegister) -> Any:
     """
     Create new user without the need to be logged in.
     """
+    _ = (session, user_in)
+    raise HTTPException(status_code=403, detail="Sign up is disabled.")
     user = crud.get_user_by_email(session=session, email=user_in.email)
     if user:
         raise HTTPException(

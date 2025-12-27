@@ -26,6 +26,7 @@ def read_renters(
     limit: int = 100,
     search: str | None = None,
 ) -> Any:
+    _ = current_user
     statement = select(Renter)
     if search:
         statement = statement.where(
@@ -45,6 +46,7 @@ def read_renters(
 
 @router.get("/{id}", response_model=RenterPublic)
 def read_renter(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -> Any:
+    _ = current_user
     renter = session.get(Renter, id)
     if not renter:
         raise HTTPException(status_code=404, detail="Renter not found")
@@ -53,6 +55,7 @@ def read_renter(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -
 
 @router.post("/", response_model=RenterPublic)
 def create_renter(*, session: SessionDep, current_user: CurrentUser, renter_in: RenterCreate) -> Any:
+    _ = current_user
     renter = Renter.model_validate(renter_in)
     session.add(renter)
     session.commit()
@@ -68,6 +71,7 @@ def update_renter(
     id: uuid.UUID,
     renter_in: RenterUpdate,
 ) -> Any:
+    _ = current_user
     renter = session.get(Renter, id)
     if not renter:
         raise HTTPException(status_code=404, detail="Renter not found")
@@ -81,10 +85,10 @@ def update_renter(
 
 @router.delete("/{id}")
 def delete_renter(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -> Message:
+    _ = current_user
     renter = session.get(Renter, id)
     if not renter:
         raise HTTPException(status_code=404, detail="Renter not found")
     session.delete(renter)
     session.commit()
     return Message(message="Renter deleted successfully")
-

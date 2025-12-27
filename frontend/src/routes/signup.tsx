@@ -47,6 +47,9 @@ export const Route = createFileRoute("/signup")({
         to: "/",
       })
     }
+    throw redirect({
+      to: "/login",
+    })
   },
   head: () => ({
     meta: [

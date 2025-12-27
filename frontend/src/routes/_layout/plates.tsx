@@ -19,7 +19,10 @@ import {
 function getPlatesQueryOptions({
   plate_number,
   status,
-}: { plate_number?: string; status?: string } = {}) {
+}: {
+  plate_number?: string
+  status?: string
+} = {}) {
   return {
     queryFn: () => getPlates(0, 100, plate_number, status),
     queryKey: ["plates", { plate_number, status }],
@@ -44,7 +47,11 @@ function PlatesTableContent({ plateNumber, status }: PlatesTableContentProps) {
     }),
   )
 
-  if (plates.data.length === 0 && !plateNumber && (!status || status === "all")) {
+  if (
+    plates.data.length === 0 &&
+    !plateNumber &&
+    (!status || status === "all")
+  ) {
     return (
       <div className="flex flex-col items-center justify-center text-center py-12">
         <div className="rounded-full bg-muted p-4 mb-4">
@@ -56,7 +63,9 @@ function PlatesTableContent({ plateNumber, status }: PlatesTableContentProps) {
     )
   }
 
-  return <DataTable columns={plateColumns} data={plates.data} id="plates-table" />
+  return (
+    <DataTable columns={plateColumns} data={plates.data} id="plates-table" />
+  )
 }
 
 function Plates() {
