@@ -33,7 +33,7 @@ function getLeasesQueryOptions({
 
 export const Route = createFileRoute("/_layout/leases")({
   component: Leases,
-  head: () => ({ meta: [{ title: "Leases - FastAPI Cloud" }] }),
+  head: () => ({ meta: [{ title: "Leases - Inspiration" }] }),
 })
 
 interface LeasesTableContentProps {

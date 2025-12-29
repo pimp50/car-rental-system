@@ -18,7 +18,7 @@ function getRentersQueryOptions({ search }: { search?: string } = {}) {
 
 export const Route = createFileRoute("/_layout/renters")({
   component: Renters,
-  head: () => ({ meta: [{ title: "Renters - FastAPI Cloud" }] }),
+  head: () => ({ meta: [{ title: "Renters - Inspiration" }] }),
 })
 
 interface RentersTableContentProps {
