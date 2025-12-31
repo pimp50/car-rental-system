@@ -6,3 +6,4 @@ node_modules/
 /playwright/.cache/
 .venv/
 routeTree.gen.ts
+frontend/.tanstack/tmp
