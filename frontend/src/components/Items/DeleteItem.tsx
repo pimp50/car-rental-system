@@ -56,12 +56,18 @@ const DeleteItem = ({ id, onSuccess }: DeleteItemProps) => {
       <DropdownMenuItem
         variant="destructive"
         onSelect={(e) => e.preventDefault()}
-        onClick={() => setIsOpen(true)}
+        onClick={(e) => {
+          e.stopPropagation() // Prevent row click
+          setIsOpen(true)
+        }}
       >
         <Trash2 />
         Delete Item
       </DropdownMenuItem>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        onClick={(e) => e.stopPropagation()} // Prevent row click on dialog click
+      >
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>Delete Item</DialogTitle>

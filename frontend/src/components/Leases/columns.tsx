@@ -28,6 +28,8 @@ function CopyId({ id }: { id: string }) {
   )
 }
 
+import { LeaseActionsMenu } from "./LeaseActionsMenu"
+
 export const leaseColumns: ColumnDef<PlateLeasePublic>[] = [
   {
     accessorKey: "id",
@@ -41,4 +43,13 @@ export const leaseColumns: ColumnDef<PlateLeasePublic>[] = [
   { accessorKey: "rent_amount", header: "Rent" },
   { accessorKey: "frequency", header: "Frequency" },
   { accessorKey: "status", header: "Status" },
+  {
+    id: "actions",
+    header: () => <span className="sr-only">Actions</span>,
+    cell: ({ row }) => (
+      <div className="flex justify-end">
+        <LeaseActionsMenu lease={row.original} />
+      </div>
+    ),
+  },
 ]

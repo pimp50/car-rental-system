@@ -44,6 +44,11 @@ export const getLeases = async (
   return data
 }
 
+export const getLease = async (id: string): Promise<PlateLeasePublic> => {
+  const { data } = await client.get(`/api/v1/leases/${id}`)
+  return data
+}
+
 export const createLease = async (
   body: PlateLeaseCreate,
 ): Promise<PlateLeasePublic> => {

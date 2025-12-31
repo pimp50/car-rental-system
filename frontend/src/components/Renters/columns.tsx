@@ -29,6 +29,8 @@ function CopyId({ id }: { id: string }) {
   )
 }
 
+import { RenterActionsMenu } from "./RenterActionsMenu"
+
 export const renterColumns: ColumnDef<RenterPublic>[] = [
   {
     accessorKey: "id",
@@ -62,5 +64,14 @@ export const renterColumns: ColumnDef<RenterPublic>[] = [
         </span>
       )
     },
+  },
+  {
+    id: "actions",
+    header: () => <span className="sr-only">Actions</span>,
+    cell: ({ row }) => (
+      <div className="flex justify-end">
+        <RenterActionsMenu renter={row.original} />
+      </div>
+    ),
   },
 ]

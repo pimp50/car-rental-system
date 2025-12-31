@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { Search } from "lucide-react"
 import { Suspense, useState } from "react"
 
@@ -31,7 +31,7 @@ function getLeasesQueryOptions({
   }
 }
 
-export const Route = createFileRoute("/_layout/leases")({
+export const Route = createFileRoute("/_layout/leases/")({
   component: Leases,
   head: () => ({ meta: [{ title: "Leases - Inspiration" }] }),
 })
@@ -47,6 +47,7 @@ function LeasesTableContent({
   renterName,
   status,
 }: LeasesTableContentProps) {
+  const navigate = useNavigate()
   const { data: leases } = useSuspenseQuery(
     getLeasesQueryOptions({
       plate_number: plateNumber || undefined,
@@ -72,7 +73,12 @@ function LeasesTableContent({
     )
   }
   return (
-    <DataTable columns={leaseColumns} data={leases.data} id="leases-table" />
+    <DataTable
+      columns={leaseColumns}
+      data={leases.data}
+      id="leases-table"
+      onRowClick={(row) => navigate({ to: "/leases/$leaseId", params: { leaseId: row.id } })}
+    />
   )
 }
 

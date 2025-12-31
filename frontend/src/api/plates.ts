@@ -40,6 +40,11 @@ export const getPlates = async (
   return data
 }
 
+export const getPlate = async (id: string): Promise<LicensePlatePublic> => {
+  const { data } = await client.get(`/api/v1/plates/${id}`)
+  return data
+}
+
 export const createPlate = async (
   body: LicensePlateCreate,
 ): Promise<LicensePlatePublic> => {

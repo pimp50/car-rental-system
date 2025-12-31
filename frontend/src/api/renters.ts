@@ -38,6 +38,11 @@ export const getRenters = async (
   return data
 }
 
+export const getRenter = async (id: string): Promise<RenterPublic> => {
+  const { data } = await client.get(`/api/v1/renters/${id}`)
+  return data
+}
+
 export const createRenter = async (
   body: RenterCreate,
 ): Promise<RenterPublic> => {

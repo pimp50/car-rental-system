@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { Search } from "lucide-react"
 import { Suspense, useState } from "react"
 
@@ -16,7 +16,7 @@ function getRentersQueryOptions({ search }: { search?: string } = {}) {
   }
 }
 
-export const Route = createFileRoute("/_layout/renters")({
+export const Route = createFileRoute("/_layout/renters/")({
   component: Renters,
   head: () => ({ meta: [{ title: "Renters - Inspiration" }] }),
 })
@@ -26,6 +26,7 @@ interface RentersTableContentProps {
 }
 
 function RentersTableContent({ search }: RentersTableContentProps) {
+  const navigate = useNavigate()
   const { data: renters } = useSuspenseQuery(
     getRentersQueryOptions({ search: search || undefined }),
   )
@@ -44,7 +45,12 @@ function RentersTableContent({ search }: RentersTableContentProps) {
     )
   }
   return (
-    <DataTable columns={renterColumns} data={renters.data} id="renters-table" />
+    <DataTable
+      columns={renterColumns}
+      data={renters.data}
+      id="renters-table"
+      onRowClick={(row) => navigate({ to: "/renters/$renterId", params: { renterId: row.id } })}
+    />
   )
 }
 

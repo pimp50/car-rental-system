@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { Search } from "lucide-react"
 import { Suspense, useState } from "react"
 
@@ -29,7 +29,7 @@ function getPlatesQueryOptions({
   }
 }
 
-export const Route = createFileRoute("/_layout/plates")({
+export const Route = createFileRoute("/_layout/plates/")({
   component: Plates,
   head: () => ({ meta: [{ title: "Plates - Inspiration" }] }),
 })
@@ -40,6 +40,7 @@ interface PlatesTableContentProps {
 }
 
 function PlatesTableContent({ plateNumber, status }: PlatesTableContentProps) {
+  const navigate = useNavigate()
   const { data: plates } = useSuspenseQuery(
     getPlatesQueryOptions({
       plate_number: plateNumber || undefined,
@@ -64,7 +65,12 @@ function PlatesTableContent({ plateNumber, status }: PlatesTableContentProps) {
   }
 
   return (
-    <DataTable columns={plateColumns} data={plates.data} id="plates-table" />
+    <DataTable
+      columns={plateColumns}
+      data={plates.data}
+      id="plates-table"
+      onRowClick={(row) => navigate({ to: "/plates/$plateId", params: { plateId: row.id } })}
+    />
   )
 }
 

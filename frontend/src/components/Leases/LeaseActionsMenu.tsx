@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { EllipsisVertical, Trash } from "lucide-react"
 import { useState } from "react"
 
-import type { LicensePlatePublic } from "@/api/plates"
-import { deletePlate } from "@/api/plates"
+import type { PlateLeasePublic } from "@/api/leases"
+import { deleteLease } from "@/api/leases"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -24,20 +24,20 @@ import { LoadingButton } from "@/components/ui/loading-button"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
 
-export function PlateActionsMenu({ plate }: { plate: LicensePlatePublic }) {
+export function LeaseActionsMenu({ lease }: { lease: PlateLeasePublic }) {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
 
   const mutation = useMutation({
-    mutationFn: (id: string) => deletePlate(id),
+    mutationFn: (id: string) => deleteLease(id),
     onSuccess: () => {
-      showSuccessToast("Plate deleted successfully")
+      showSuccessToast("Lease deleted successfully")
       setIsOpen(false)
     },
     onError: handleError.bind(showErrorToast),
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["plates"] })
+      queryClient.invalidateQueries({ queryKey: ["leases"] })
     },
   })
 
@@ -67,9 +67,9 @@ export function PlateActionsMenu({ plate }: { plate: LicensePlatePublic }) {
           onClick={(e) => e.stopPropagation()} // Prevent row click on dialog click
         >
           <DialogHeader>
-            <DialogTitle>Delete Plate</DialogTitle>
+            <DialogTitle>Delete Lease</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete plate "{plate.plate_number}"? This action cannot be undone.
+              Are you sure you want to delete this lease? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -79,7 +79,7 @@ export function PlateActionsMenu({ plate }: { plate: LicensePlatePublic }) {
             <LoadingButton
               variant="destructive"
               loading={mutation.isPending}
-              onClick={() => mutation.mutate(plate.id)}
+              onClick={() => mutation.mutate(lease.id)}
             >
               Delete
             </LoadingButton>
@@ -90,4 +90,4 @@ export function PlateActionsMenu({ plate }: { plate: LicensePlatePublic }) {
   )
 }
 
-export default PlateActionsMenu
+export default LeaseActionsMenu
