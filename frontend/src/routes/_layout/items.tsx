@@ -42,7 +42,7 @@ function ItemsTableContent() {
     )
   }
 
-  return <DataTable columns={columns} data={items.data} />
+  return <DataTable columns={columns} data={items.data} id="items-table" />
 }
 
 function ItemsTable() {
