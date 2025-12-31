@@ -54,7 +54,7 @@ export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
       {
-        title: "Sign Up - FastAPI Cloud",
+        title: "Sign Up - Inspiration",
       },
     ],
   }),

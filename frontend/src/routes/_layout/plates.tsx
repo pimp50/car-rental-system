@@ -31,7 +31,7 @@ function getPlatesQueryOptions({
 
 export const Route = createFileRoute("/_layout/plates")({
   component: Plates,
-  head: () => ({ meta: [{ title: "Plates - FastAPI Cloud" }] }),
+  head: () => ({ meta: [{ title: "Plates - Inspiration" }] }),
 })
 
 interface PlatesTableContentProps {
