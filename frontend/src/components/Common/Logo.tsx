@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router"
 
 import { useTheme } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
-import logo from "/assets/images/car-rental-service-logo.svg"
+import logo from "/assets/images/fastapi-logo.svg"
 import icon from "/assets/images/fastapi-icon.svg"
 import iconLight from "/assets/images/fastapi-icon-light.svg"
 import logoLight from "/assets/images/fastapi-logo-light.svg"
