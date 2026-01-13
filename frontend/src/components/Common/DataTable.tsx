@@ -1,28 +1,16 @@
 import {
-  type ColumnDef,
-  type ColumnOrderState,
+  type Table as TableType,
   flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable,
-  type VisibilityState,
 } from "@tanstack/react-table"
 import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  Settings2,
 } from "lucide-react"
-import { type DragEvent, useEffect, useState } from "react"
+import { type DragEvent, useState } from "react"
 
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   Select,
   SelectContent,
@@ -39,76 +27,16 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-  id?: string // Unique ID for persistence
+interface DataTableProps<TData> {
+  table: TableType<TData>
   onRowClick?: (row: TData) => void
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-  id,
+export function DataTable<TData>({
+  table,
   onRowClick,
-}: DataTableProps<TData, TValue>) {
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-    () => {
-      if (id) {
-        const saved = localStorage.getItem(`${id}-visibility`)
-        if (saved) {
-          try {
-            return JSON.parse(saved)
-          } catch (e) {
-            console.error("Failed to parse saved visibility", e)
-          }
-        }
-      }
-      return {}
-    },
-  )
-
-  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(() => {
-    if (id) {
-      const saved = localStorage.getItem(`${id}-order`)
-      if (saved) {
-        try {
-          return JSON.parse(saved)
-        } catch (e) {
-          console.error("Failed to parse saved order", e)
-        }
-      }
-    }
-    return []
-  })
-
+}: DataTableProps<TData>) {
   const [draggingColumnId, setDraggingColumnId] = useState<string | null>(null)
-
-  // Save state to localStorage on change
-  useEffect(() => {
-    if (id) {
-      localStorage.setItem(`${id}-visibility`, JSON.stringify(columnVisibility))
-    }
-  }, [id, columnVisibility])
-
-  useEffect(() => {
-    if (id && columnOrder.length > 0) {
-      localStorage.setItem(`${id}-order`, JSON.stringify(columnOrder))
-    }
-  }, [id, columnOrder])
-
-  const table = useReactTable({
-    data,
-    columns,
-    state: {
-      columnVisibility,
-      columnOrder,
-    },
-    onColumnVisibilityChange: setColumnVisibility,
-    onColumnOrderChange: setColumnOrder,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  })
 
   const handleDragStart = (e: DragEvent, columnId: string) => {
     setDraggingColumnId(columnId)
@@ -131,43 +59,13 @@ export function DataTable<TData, TValue>({
       const newOrder = [...currentOrder]
       newOrder.splice(oldIndex, 1)
       newOrder.splice(newIndex, 0, draggingColumnId)
-      setColumnOrder(newOrder)
+      table.setColumnOrder(newOrder)
     }
     setDraggingColumnId(null)
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              <Settings2 className="mr-2 h-4 w-4" />
-              View
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                    onSelect={(e) => e.preventDefault()}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -216,7 +114,7 @@ export function DataTable<TData, TValue>({
           ) : (
             <TableRow className="hover:bg-transparent">
               <TableCell
-                colSpan={columns.length}
+                colSpan={table.getAllColumns().length}
                 className="h-32 text-center text-muted-foreground"
               >
                 No results found.

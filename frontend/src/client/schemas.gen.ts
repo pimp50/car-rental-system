@@ -55,6 +55,651 @@ export const Body_login_login_access_tokenSchema = {
     title: 'Body_login-login_access_token'
 } as const;
 
+export const CarCreateSchema = {
+    properties: {
+        model: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Model'
+        },
+        wav: {
+            type: 'integer',
+            title: 'Wav',
+            default: 0
+        },
+        marker: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 64
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Marker',
+            default: 'premium'
+        },
+        color: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 64
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Color'
+        },
+        year: {
+            type: 'integer',
+            title: 'Year'
+        },
+        vin_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 64
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Vin Number'
+        },
+        plate_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 16
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Plate Number'
+        },
+        state: {
+            type: 'string',
+            maxLength: 2,
+            title: 'State',
+            default: 'NY'
+        },
+        registration_expires_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Registration Expires At'
+        },
+        insurance_expires_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Insurance Expires At'
+        },
+        price: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Price'
+        },
+        installation_fee_for_safety_equipment: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Installation Fee For Safety Equipment'
+        },
+        insurance_expenses: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Insurance Expenses'
+        },
+        service_expenses: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Service Expenses'
+        },
+        maintenance_costs: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Maintenance Costs'
+        },
+        full_coverage_auto_insurance: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Full Coverage Auto Insurance'
+        },
+        other_expenses: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Other Expenses'
+        },
+        status: {
+            type: 'string',
+            maxLength: 32,
+            title: 'Status',
+            default: 'available'
+        },
+        notes: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Notes'
+        }
+    },
+    type: 'object',
+    required: ['model', 'year'],
+    title: 'CarCreate'
+} as const;
+
+export const CarPublicSchema = {
+    properties: {
+        model: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Model'
+        },
+        wav: {
+            type: 'integer',
+            title: 'Wav',
+            default: 0
+        },
+        marker: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 64
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Marker',
+            default: 'premium'
+        },
+        color: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 64
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Color'
+        },
+        year: {
+            type: 'integer',
+            title: 'Year'
+        },
+        vin_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 64
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Vin Number'
+        },
+        plate_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 16
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Plate Number'
+        },
+        state: {
+            type: 'string',
+            maxLength: 2,
+            title: 'State',
+            default: 'NY'
+        },
+        registration_expires_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Registration Expires At'
+        },
+        insurance_expires_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Insurance Expires At'
+        },
+        price: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Price'
+        },
+        installation_fee_for_safety_equipment: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Installation Fee For Safety Equipment'
+        },
+        insurance_expenses: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Insurance Expenses'
+        },
+        service_expenses: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Service Expenses'
+        },
+        maintenance_costs: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Maintenance Costs'
+        },
+        full_coverage_auto_insurance: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Full Coverage Auto Insurance'
+        },
+        other_expenses: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Other Expenses'
+        },
+        status: {
+            type: 'string',
+            maxLength: 32,
+            title: 'Status',
+            default: 'available'
+        },
+        notes: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Notes'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['model', 'year', 'id'],
+    title: 'CarPublic'
+} as const;
+
+export const CarUpdateSchema = {
+    properties: {
+        model: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255,
+                    minLength: 1
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Model'
+        },
+        wav: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Wav'
+        },
+        marker: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 64
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Marker'
+        },
+        color: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 64
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Color'
+        },
+        year: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Year'
+        },
+        vin_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 64
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Vin Number'
+        },
+        plate_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 16
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Plate Number'
+        },
+        state: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'State'
+        },
+        registration_expires_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Registration Expires At'
+        },
+        insurance_expires_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Insurance Expires At'
+        },
+        price: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Price'
+        },
+        installation_fee_for_safety_equipment: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Installation Fee For Safety Equipment'
+        },
+        insurance_expenses: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Insurance Expenses'
+        },
+        service_expenses: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Service Expenses'
+        },
+        maintenance_costs: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Maintenance Costs'
+        },
+        full_coverage_auto_insurance: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Full Coverage Auto Insurance'
+        },
+        other_expenses: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Other Expenses'
+        },
+        status: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 32
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Status'
+        },
+        notes: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Notes'
+        }
+    },
+    type: 'object',
+    title: 'CarUpdate'
+} as const;
+
+export const CarsPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/CarPublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'CarsPublic'
+} as const;
+
 export const HTTPValidationErrorSchema = {
     properties: {
         detail: {
@@ -182,6 +827,202 @@ export const ItemsPublicSchema = {
     title: 'ItemsPublic'
 } as const;
 
+export const LicensePlateCreateSchema = {
+    properties: {
+        plate_number: {
+            type: 'string',
+            maxLength: 16,
+            minLength: 2,
+            title: 'Plate Number'
+        },
+        plate_state: {
+            type: 'string',
+            maxLength: 2,
+            title: 'Plate State',
+            default: 'NY'
+        },
+        purchase_date: {
+            type: 'string',
+            format: 'date',
+            title: 'Purchase Date'
+        },
+        purchase_amount: {
+            type: 'number',
+            title: 'Purchase Amount'
+        },
+        status: {
+            type: 'string',
+            maxLength: 32,
+            title: 'Status',
+            default: 'available'
+        },
+        notes: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Notes'
+        }
+    },
+    type: 'object',
+    required: ['plate_number', 'purchase_date', 'purchase_amount'],
+    title: 'LicensePlateCreate'
+} as const;
+
+export const LicensePlatePublicSchema = {
+    properties: {
+        plate_number: {
+            type: 'string',
+            maxLength: 16,
+            minLength: 2,
+            title: 'Plate Number'
+        },
+        plate_state: {
+            type: 'string',
+            maxLength: 2,
+            title: 'Plate State',
+            default: 'NY'
+        },
+        purchase_date: {
+            type: 'string',
+            format: 'date',
+            title: 'Purchase Date'
+        },
+        purchase_amount: {
+            type: 'number',
+            title: 'Purchase Amount'
+        },
+        status: {
+            type: 'string',
+            maxLength: 32,
+            title: 'Status',
+            default: 'available'
+        },
+        notes: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Notes'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['plate_number', 'purchase_date', 'purchase_amount', 'id'],
+    title: 'LicensePlatePublic'
+} as const;
+
+export const LicensePlateUpdateSchema = {
+    properties: {
+        plate_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 16
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Plate Number'
+        },
+        plate_state: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Plate State'
+        },
+        purchase_date: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Purchase Date'
+        },
+        purchase_amount: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Purchase Amount'
+        },
+        status: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 32
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Status'
+        },
+        notes: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Notes'
+        }
+    },
+    type: 'object',
+    title: 'LicensePlateUpdate'
+} as const;
+
+export const LicensePlatesPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/LicensePlatePublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'LicensePlatesPublic'
+} as const;
+
 export const MessageSchema = {
     properties: {
         message: {
@@ -212,6 +1053,198 @@ export const NewPasswordSchema = {
     title: 'NewPassword'
 } as const;
 
+export const PlateLeaseCreateSchema = {
+    properties: {
+        start_date: {
+            type: 'string',
+            format: 'date',
+            title: 'Start Date'
+        },
+        end_date: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'End Date'
+        },
+        rent_amount: {
+            type: 'number',
+            title: 'Rent Amount'
+        },
+        frequency: {
+            type: 'string',
+            maxLength: 16,
+            title: 'Frequency',
+            default: 'monthly'
+        },
+        status: {
+            type: 'string',
+            maxLength: 32,
+            title: 'Status',
+            default: 'active'
+        },
+        plate_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Plate Id'
+        },
+        renter_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Renter Id'
+        }
+    },
+    type: 'object',
+    required: ['start_date', 'rent_amount', 'plate_id', 'renter_id'],
+    title: 'PlateLeaseCreate'
+} as const;
+
+export const PlateLeasePublicSchema = {
+    properties: {
+        start_date: {
+            type: 'string',
+            format: 'date',
+            title: 'Start Date'
+        },
+        end_date: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'End Date'
+        },
+        rent_amount: {
+            type: 'number',
+            title: 'Rent Amount'
+        },
+        frequency: {
+            type: 'string',
+            maxLength: 16,
+            title: 'Frequency',
+            default: 'monthly'
+        },
+        status: {
+            type: 'string',
+            maxLength: 32,
+            title: 'Status',
+            default: 'active'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        plate_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Plate Id'
+        },
+        renter_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Renter Id'
+        }
+    },
+    type: 'object',
+    required: ['start_date', 'rent_amount', 'id', 'plate_id', 'renter_id'],
+    title: 'PlateLeasePublic'
+} as const;
+
+export const PlateLeaseUpdateSchema = {
+    properties: {
+        start_date: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Start Date'
+        },
+        end_date: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'End Date'
+        },
+        rent_amount: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Rent Amount'
+        },
+        frequency: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 16
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Frequency'
+        },
+        status: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 32
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Status'
+        }
+    },
+    type: 'object',
+    title: 'PlateLeaseUpdate'
+} as const;
+
+export const PlateLeasesPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/PlateLeasePublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'PlateLeasesPublic'
+} as const;
+
 export const PrivateUserCreateSchema = {
     properties: {
         email: {
@@ -235,6 +1268,224 @@ export const PrivateUserCreateSchema = {
     type: 'object',
     required: ['email', 'password', 'full_name'],
     title: 'PrivateUserCreate'
+} as const;
+
+export const RenterCreateSchema = {
+    properties: {
+        full_name: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Full Name'
+        },
+        phone: {
+            type: 'string',
+            maxLength: 20,
+            minLength: 7,
+            title: 'Phone'
+        },
+        email: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255,
+                    format: 'email'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Email'
+        },
+        driver_license_number: {
+            type: 'string',
+            maxLength: 64,
+            minLength: 4,
+            title: 'Driver License Number'
+        },
+        driver_license_state: {
+            type: 'string',
+            maxLength: 2,
+            title: 'Driver License State',
+            default: 'NY'
+        },
+        address: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Address'
+        }
+    },
+    type: 'object',
+    required: ['full_name', 'phone', 'driver_license_number'],
+    title: 'RenterCreate'
+} as const;
+
+export const RenterPublicSchema = {
+    properties: {
+        full_name: {
+            type: 'string',
+            maxLength: 255,
+            minLength: 1,
+            title: 'Full Name'
+        },
+        phone: {
+            type: 'string',
+            maxLength: 20,
+            minLength: 7,
+            title: 'Phone'
+        },
+        email: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255,
+                    format: 'email'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Email'
+        },
+        driver_license_number: {
+            type: 'string',
+            maxLength: 64,
+            minLength: 4,
+            title: 'Driver License Number'
+        },
+        driver_license_state: {
+            type: 'string',
+            maxLength: 2,
+            title: 'Driver License State',
+            default: 'NY'
+        },
+        address: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Address'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['full_name', 'phone', 'driver_license_number', 'id'],
+    title: 'RenterPublic'
+} as const;
+
+export const RenterUpdateSchema = {
+    properties: {
+        full_name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Full Name'
+        },
+        phone: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 20
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Phone'
+        },
+        email: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255,
+                    format: 'email'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Email'
+        },
+        driver_license_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 64
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Driver License Number'
+        },
+        driver_license_state: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 2
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Driver License State'
+        },
+        address: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Address'
+        }
+    },
+    type: 'object',
+    title: 'RenterUpdate'
+} as const;
+
+export const RentersPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/RenterPublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'RentersPublic'
 } as const;
 
 export const TokenSchema = {

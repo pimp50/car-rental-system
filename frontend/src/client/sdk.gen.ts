@@ -3,7 +3,124 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { CarsReadCarsData, CarsReadCarsResponse, CarsCreateCarData, CarsCreateCarResponse, CarsReadCarData, CarsReadCarResponse, CarsUpdateCarData, CarsUpdateCarResponse, CarsDeleteCarData, CarsDeleteCarResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LeasesReadLeasesData, LeasesReadLeasesResponse, LeasesCreateLeaseData, LeasesCreateLeaseResponse, LeasesReadLeaseData, LeasesReadLeaseResponse, LeasesUpdateLeaseData, LeasesUpdateLeaseResponse, LeasesDeleteLeaseData, LeasesDeleteLeaseResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PlatesReadPlatesData, PlatesReadPlatesResponse, PlatesCreateLicensePlateData, PlatesCreateLicensePlateResponse, PlatesReadPlateData, PlatesReadPlateResponse, PlatesUpdateLicensePlateData, PlatesUpdateLicensePlateResponse, PlatesDeleteLicensePlateData, PlatesDeleteLicensePlateResponse, PrivateCreateUserData, PrivateCreateUserResponse, RentersReadRentersData, RentersReadRentersResponse, RentersCreateRenterData, RentersCreateRenterResponse, RentersReadRenterData, RentersReadRenterResponse, RentersUpdateRenterData, RentersUpdateRenterResponse, RentersDeleteRenterData, RentersDeleteRenterResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+
+export class CarsService {
+    /**
+     * Read Cars
+     * Retrieve cars.
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @param data.model
+     * @param data.plateNumber
+     * @param data.status
+     * @returns CarsPublic Successful Response
+     * @throws ApiError
+     */
+    public static readCars(data: CarsReadCarsData = {}): CancelablePromise<CarsReadCarsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cars/',
+            query: {
+                skip: data.skip,
+                limit: data.limit,
+                model: data.model,
+                plate_number: data.plateNumber,
+                status: data.status
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Car
+     * Create new car.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns CarPublic Successful Response
+     * @throws ApiError
+     */
+    public static createCar(data: CarsCreateCarData): CancelablePromise<CarsCreateCarResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/cars/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Car
+     * Get car by ID.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns CarPublic Successful Response
+     * @throws ApiError
+     */
+    public static readCar(data: CarsReadCarData): CancelablePromise<CarsReadCarResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cars/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Car
+     * Update a car.
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.requestBody
+     * @returns CarPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateCar(data: CarsUpdateCarData): CancelablePromise<CarsUpdateCarResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/cars/{id}',
+            path: {
+                id: data.id
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Car
+     * Delete a car.
+     * @param data The data for the request.
+     * @param data.id
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteCar(data: CarsDeleteCarData): CancelablePromise<CarsDeleteCarResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/cars/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
 
 export class ItemsService {
     /**
@@ -116,6 +233,118 @@ export class ItemsService {
     }
 }
 
+export class LeasesService {
+    /**
+     * Read Leases
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @param data.plateNumber
+     * @param data.renterName
+     * @param data.status
+     * @returns PlateLeasesPublic Successful Response
+     * @throws ApiError
+     */
+    public static readLeases(data: LeasesReadLeasesData = {}): CancelablePromise<LeasesReadLeasesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/leases/',
+            query: {
+                skip: data.skip,
+                limit: data.limit,
+                plate_number: data.plateNumber,
+                renter_name: data.renterName,
+                status: data.status
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Lease
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns PlateLeasePublic Successful Response
+     * @throws ApiError
+     */
+    public static createLease(data: LeasesCreateLeaseData): CancelablePromise<LeasesCreateLeaseResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/leases/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Lease
+     * @param data The data for the request.
+     * @param data.id
+     * @returns PlateLeasePublic Successful Response
+     * @throws ApiError
+     */
+    public static readLease(data: LeasesReadLeaseData): CancelablePromise<LeasesReadLeaseResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/leases/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Lease
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.requestBody
+     * @returns PlateLeasePublic Successful Response
+     * @throws ApiError
+     */
+    public static updateLease(data: LeasesUpdateLeaseData): CancelablePromise<LeasesUpdateLeaseResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/leases/{id}',
+            path: {
+                id: data.id
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Lease
+     * @param data The data for the request.
+     * @param data.id
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteLease(data: LeasesDeleteLeaseData): CancelablePromise<LeasesDeleteLeaseResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/leases/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
 export class LoginService {
     /**
      * Login Access Token
@@ -213,6 +442,116 @@ export class LoginService {
     }
 }
 
+export class PlatesService {
+    /**
+     * Read Plates
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @param data.plateNumber
+     * @param data.status
+     * @returns LicensePlatesPublic Successful Response
+     * @throws ApiError
+     */
+    public static readPlates(data: PlatesReadPlatesData = {}): CancelablePromise<PlatesReadPlatesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/plates/',
+            query: {
+                skip: data.skip,
+                limit: data.limit,
+                plate_number: data.plateNumber,
+                status: data.status
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create License Plate
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns LicensePlatePublic Successful Response
+     * @throws ApiError
+     */
+    public static createLicensePlate(data: PlatesCreateLicensePlateData): CancelablePromise<PlatesCreateLicensePlateResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/plates/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Plate
+     * @param data The data for the request.
+     * @param data.id
+     * @returns LicensePlatePublic Successful Response
+     * @throws ApiError
+     */
+    public static readPlate(data: PlatesReadPlateData): CancelablePromise<PlatesReadPlateResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/plates/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update License Plate
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.requestBody
+     * @returns LicensePlatePublic Successful Response
+     * @throws ApiError
+     */
+    public static updateLicensePlate(data: PlatesUpdateLicensePlateData): CancelablePromise<PlatesUpdateLicensePlateResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/plates/{id}',
+            path: {
+                id: data.id
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete License Plate
+     * @param data The data for the request.
+     * @param data.id
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteLicensePlate(data: PlatesDeleteLicensePlateData): CancelablePromise<PlatesDeleteLicensePlateResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/plates/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
 export class PrivateService {
     /**
      * Create User
@@ -228,6 +567,114 @@ export class PrivateService {
             url: '/api/v1/private/users/',
             body: data.requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class RentersService {
+    /**
+     * Read Renters
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @param data.search
+     * @returns RentersPublic Successful Response
+     * @throws ApiError
+     */
+    public static readRenters(data: RentersReadRentersData = {}): CancelablePromise<RentersReadRentersResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/renters/',
+            query: {
+                skip: data.skip,
+                limit: data.limit,
+                search: data.search
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Renter
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns RenterPublic Successful Response
+     * @throws ApiError
+     */
+    public static createRenter(data: RentersCreateRenterData): CancelablePromise<RentersCreateRenterResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/renters/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Renter
+     * @param data The data for the request.
+     * @param data.id
+     * @returns RenterPublic Successful Response
+     * @throws ApiError
+     */
+    public static readRenter(data: RentersReadRenterData): CancelablePromise<RentersReadRenterResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/renters/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Renter
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.requestBody
+     * @returns RenterPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateRenter(data: RentersUpdateRenterData): CancelablePromise<RentersUpdateRenterResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/renters/{id}',
+            path: {
+                id: data.id
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Renter
+     * @param data The data for the request.
+     * @param data.id
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteRenter(data: RentersDeleteRenterData): CancelablePromise<RentersDeleteRenterResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/renters/{id}',
+            path: {
+                id: data.id
+            },
             errors: {
                 422: 'Validation Error'
             }

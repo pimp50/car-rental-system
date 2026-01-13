@@ -1,5 +1,5 @@
 import uuid
-from datetime import date
+from datetime import date, datetime
 
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.types import CHAR, TypeDecorator
@@ -253,4 +253,61 @@ class PlateLeasePublic(PlateLeaseBase):
 
 class PlateLeasesPublic(SQLModel):
     data: list[PlateLeasePublic]
+    count: int
+
+
+# Car Models
+class CarBase(SQLModel):
+    model: str = Field(min_length=1, max_length=255)
+    wav: int = Field(default=0) # 0 or 1
+    marker: str | None = Field(default="premium", max_length=64)
+    color: str | None = Field(default=None, max_length=64)
+    year: int
+    vin_number: str | None = Field(default=None, max_length=64)
+    plate_number: str | None = Field(default=None, max_length=16)
+    state: str = Field(default="NY", max_length=2)
+    registration_expires_at: datetime | None = None
+    insurance_expires_at: datetime | None = None
+    price: float | None = None
+    installation_fee_for_safety_equipment: float | None = None
+    insurance_expenses: float | None = None
+    service_expenses: float | None = None
+    maintenance_costs: float | None = None
+    full_coverage_auto_insurance: float | None = None
+    other_expenses: float | None = None
+    status: str = Field(default="available", max_length=32)
+    notes: str | None = Field(default=None, max_length=255)
+
+class CarCreate(CarBase):
+    pass
+
+class CarUpdate(SQLModel):
+    model: str | None = Field(default=None, min_length=1, max_length=255)
+    wav: int | None = None
+    marker: str | None = Field(default=None, max_length=64)
+    color: str | None = Field(default=None, max_length=64)
+    year: int | None = None
+    vin_number: str | None = Field(default=None, max_length=64)
+    plate_number: str | None = Field(default=None, max_length=16)
+    state: str | None = Field(default=None, max_length=2)
+    registration_expires_at: datetime | None = None
+    insurance_expires_at: datetime | None = None
+    price: float | None = None
+    installation_fee_for_safety_equipment: float | None = None
+    insurance_expenses: float | None = None
+    service_expenses: float | None = None
+    maintenance_costs: float | None = None
+    full_coverage_auto_insurance: float | None = None
+    other_expenses: float | None = None
+    status: str | None = Field(default=None, max_length=32)
+    notes: str | None = Field(default=None, max_length=255)
+
+class Car(CarBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, sa_type=UUID())
+
+class CarPublic(CarBase):
+    id: uuid.UUID
+
+class CarsPublic(SQLModel):
+    data: list[CarPublic]
     count: int

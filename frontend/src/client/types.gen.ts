@@ -9,6 +9,78 @@ export type Body_login_login_access_token = {
     client_secret?: (string | null);
 };
 
+export type CarCreate = {
+    model: string;
+    wav?: number;
+    marker?: (string | null);
+    color?: (string | null);
+    year: number;
+    vin_number?: (string | null);
+    plate_number?: (string | null);
+    state?: string;
+    registration_expires_at?: (string | null);
+    insurance_expires_at?: (string | null);
+    price?: (number | null);
+    installation_fee_for_safety_equipment?: (number | null);
+    insurance_expenses?: (number | null);
+    service_expenses?: (number | null);
+    maintenance_costs?: (number | null);
+    full_coverage_auto_insurance?: (number | null);
+    other_expenses?: (number | null);
+    status?: string;
+    notes?: (string | null);
+};
+
+export type CarPublic = {
+    model: string;
+    wav?: number;
+    marker?: (string | null);
+    color?: (string | null);
+    year: number;
+    vin_number?: (string | null);
+    plate_number?: (string | null);
+    state?: string;
+    registration_expires_at?: (string | null);
+    insurance_expires_at?: (string | null);
+    price?: (number | null);
+    installation_fee_for_safety_equipment?: (number | null);
+    insurance_expenses?: (number | null);
+    service_expenses?: (number | null);
+    maintenance_costs?: (number | null);
+    full_coverage_auto_insurance?: (number | null);
+    other_expenses?: (number | null);
+    status?: string;
+    notes?: (string | null);
+    id: string;
+};
+
+export type CarsPublic = {
+    data: Array<CarPublic>;
+    count: number;
+};
+
+export type CarUpdate = {
+    model?: (string | null);
+    wav?: (number | null);
+    marker?: (string | null);
+    color?: (string | null);
+    year?: (number | null);
+    vin_number?: (string | null);
+    plate_number?: (string | null);
+    state?: (string | null);
+    registration_expires_at?: (string | null);
+    insurance_expires_at?: (string | null);
+    price?: (number | null);
+    installation_fee_for_safety_equipment?: (number | null);
+    insurance_expenses?: (number | null);
+    service_expenses?: (number | null);
+    maintenance_costs?: (number | null);
+    full_coverage_auto_insurance?: (number | null);
+    other_expenses?: (number | null);
+    status?: (string | null);
+    notes?: (string | null);
+};
+
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
@@ -35,6 +107,39 @@ export type ItemUpdate = {
     description?: (string | null);
 };
 
+export type LicensePlateCreate = {
+    plate_number: string;
+    plate_state?: string;
+    purchase_date: string;
+    purchase_amount: number;
+    status?: string;
+    notes?: (string | null);
+};
+
+export type LicensePlatePublic = {
+    plate_number: string;
+    plate_state?: string;
+    purchase_date: string;
+    purchase_amount: number;
+    status?: string;
+    notes?: (string | null);
+    id: string;
+};
+
+export type LicensePlatesPublic = {
+    data: Array<LicensePlatePublic>;
+    count: number;
+};
+
+export type LicensePlateUpdate = {
+    plate_number?: (string | null);
+    plate_state?: (string | null);
+    purchase_date?: (string | null);
+    purchase_amount?: (number | null);
+    status?: (string | null);
+    notes?: (string | null);
+};
+
 export type Message = {
     message: string;
 };
@@ -44,11 +149,78 @@ export type NewPassword = {
     new_password: string;
 };
 
+export type PlateLeaseCreate = {
+    start_date: string;
+    end_date?: (string | null);
+    rent_amount: number;
+    frequency?: string;
+    status?: string;
+    plate_id: string;
+    renter_id: string;
+};
+
+export type PlateLeasePublic = {
+    start_date: string;
+    end_date?: (string | null);
+    rent_amount: number;
+    frequency?: string;
+    status?: string;
+    id: string;
+    plate_id: string;
+    renter_id: string;
+};
+
+export type PlateLeasesPublic = {
+    data: Array<PlateLeasePublic>;
+    count: number;
+};
+
+export type PlateLeaseUpdate = {
+    start_date?: (string | null);
+    end_date?: (string | null);
+    rent_amount?: (number | null);
+    frequency?: (string | null);
+    status?: (string | null);
+};
+
 export type PrivateUserCreate = {
     email: string;
     password: string;
     full_name: string;
     is_verified?: boolean;
+};
+
+export type RenterCreate = {
+    full_name: string;
+    phone: string;
+    email?: (string | null);
+    driver_license_number: string;
+    driver_license_state?: string;
+    address?: (string | null);
+};
+
+export type RenterPublic = {
+    full_name: string;
+    phone: string;
+    email?: (string | null);
+    driver_license_number: string;
+    driver_license_state?: string;
+    address?: (string | null);
+    id: string;
+};
+
+export type RentersPublic = {
+    data: Array<RenterPublic>;
+    count: number;
+};
+
+export type RenterUpdate = {
+    full_name?: (string | null);
+    phone?: (string | null);
+    email?: (string | null);
+    driver_license_number?: (string | null);
+    driver_license_state?: (string | null);
+    address?: (string | null);
 };
 
 export type Token = {
@@ -107,6 +279,41 @@ export type ValidationError = {
     type: string;
 };
 
+export type CarsReadCarsData = {
+    limit?: number;
+    model?: (string | null);
+    plateNumber?: (string | null);
+    skip?: number;
+    status?: (string | null);
+};
+
+export type CarsReadCarsResponse = (CarsPublic);
+
+export type CarsCreateCarData = {
+    requestBody: CarCreate;
+};
+
+export type CarsCreateCarResponse = (CarPublic);
+
+export type CarsReadCarData = {
+    id: string;
+};
+
+export type CarsReadCarResponse = (CarPublic);
+
+export type CarsUpdateCarData = {
+    id: string;
+    requestBody: CarUpdate;
+};
+
+export type CarsUpdateCarResponse = (CarPublic);
+
+export type CarsDeleteCarData = {
+    id: string;
+};
+
+export type CarsDeleteCarResponse = (Message);
+
 export type ItemsReadItemsData = {
     limit?: number;
     skip?: number;
@@ -139,6 +346,41 @@ export type ItemsDeleteItemData = {
 
 export type ItemsDeleteItemResponse = (Message);
 
+export type LeasesReadLeasesData = {
+    limit?: number;
+    plateNumber?: (string | null);
+    renterName?: (string | null);
+    skip?: number;
+    status?: (string | null);
+};
+
+export type LeasesReadLeasesResponse = (PlateLeasesPublic);
+
+export type LeasesCreateLeaseData = {
+    requestBody: PlateLeaseCreate;
+};
+
+export type LeasesCreateLeaseResponse = (PlateLeasePublic);
+
+export type LeasesReadLeaseData = {
+    id: string;
+};
+
+export type LeasesReadLeaseResponse = (PlateLeasePublic);
+
+export type LeasesUpdateLeaseData = {
+    id: string;
+    requestBody: PlateLeaseUpdate;
+};
+
+export type LeasesUpdateLeaseResponse = (PlateLeasePublic);
+
+export type LeasesDeleteLeaseData = {
+    id: string;
+};
+
+export type LeasesDeleteLeaseResponse = (Message);
+
 export type LoginLoginAccessTokenData = {
     formData: Body_login_login_access_token;
 };
@@ -165,11 +407,78 @@ export type LoginRecoverPasswordHtmlContentData = {
 
 export type LoginRecoverPasswordHtmlContentResponse = (string);
 
+export type PlatesReadPlatesData = {
+    limit?: number;
+    plateNumber?: (string | null);
+    skip?: number;
+    status?: (string | null);
+};
+
+export type PlatesReadPlatesResponse = (LicensePlatesPublic);
+
+export type PlatesCreateLicensePlateData = {
+    requestBody: LicensePlateCreate;
+};
+
+export type PlatesCreateLicensePlateResponse = (LicensePlatePublic);
+
+export type PlatesReadPlateData = {
+    id: string;
+};
+
+export type PlatesReadPlateResponse = (LicensePlatePublic);
+
+export type PlatesUpdateLicensePlateData = {
+    id: string;
+    requestBody: LicensePlateUpdate;
+};
+
+export type PlatesUpdateLicensePlateResponse = (LicensePlatePublic);
+
+export type PlatesDeleteLicensePlateData = {
+    id: string;
+};
+
+export type PlatesDeleteLicensePlateResponse = (Message);
+
 export type PrivateCreateUserData = {
     requestBody: PrivateUserCreate;
 };
 
 export type PrivateCreateUserResponse = (UserPublic);
+
+export type RentersReadRentersData = {
+    limit?: number;
+    search?: (string | null);
+    skip?: number;
+};
+
+export type RentersReadRentersResponse = (RentersPublic);
+
+export type RentersCreateRenterData = {
+    requestBody: RenterCreate;
+};
+
+export type RentersCreateRenterResponse = (RenterPublic);
+
+export type RentersReadRenterData = {
+    id: string;
+};
+
+export type RentersReadRenterResponse = (RenterPublic);
+
+export type RentersUpdateRenterData = {
+    id: string;
+    requestBody: RenterUpdate;
+};
+
+export type RentersUpdateRenterResponse = (RenterPublic);
+
+export type RentersDeleteRenterData = {
+    id: string;
+};
+
+export type RentersDeleteRenterResponse = (Message);
 
 export type UsersReadUsersData = {
     limit?: number;
