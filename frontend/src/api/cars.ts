@@ -2,13 +2,14 @@ import client from "@/lib/api"
 
 export type CarPublic = {
   id: string
+  car_id?: number | null
   model: string
   wav: number
   marker?: string | null
   color?: string | null
   year: number
   vin_number?: string | null
-  plate_number?: string | null
+  plate_number: string
   state: string
   registration_expires_at?: string | null
   insurance_expires_at?: string | null
@@ -21,6 +22,9 @@ export type CarPublic = {
   other_expenses?: number | null
   status: string
   notes?: string | null
+  create_by?: string | null
+  create_time?: string | null
+  update_time?: string | null
 }
 
 export type CarsPublic = { data: CarPublic[]; count: number }
@@ -32,7 +36,7 @@ export type CarCreate = {
   color?: string
   year: number
   vin_number?: string
-  plate_number?: string
+  plate_number: string
   state?: string
   registration_expires_at?: string
   insurance_expires_at?: string

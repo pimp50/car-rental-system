@@ -35,6 +35,10 @@ function CopyId({ id }: { id: string }) {
 
 export const carColumns: ColumnDef<CarPublic>[] = [
   {
+    accessorKey: "car_id",
+    header: "Car ID",
+  },
+  {
     accessorKey: "id",
     header: "ID",
     cell: ({ row }) => <CopyId id={row.original.id} />,
@@ -54,6 +58,30 @@ export const carColumns: ColumnDef<CarPublic>[] = [
   {
     accessorKey: "price",
     header: "Price",
+  },
+  {
+    accessorKey: "installation_fee_for_safety_equipment",
+    header: "Install Fee (Safety Equipment)",
+  },
+  {
+    accessorKey: "insurance_expenses",
+    header: "Insurance Costs",
+  },
+  {
+    accessorKey: "service_expenses",
+    header: "Service Costs",
+  },
+  {
+    accessorKey: "maintenance_costs",
+    header: "Maintenance Costs",
+  },
+  {
+    accessorKey: "full_coverage_auto_insurance",
+    header: "Full Coverage Ins.",
+  },
+  {
+    accessorKey: "other_expenses",
+    header: "Other Expenses",
   },
   {
     accessorKey: "status",

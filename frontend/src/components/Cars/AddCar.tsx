@@ -45,13 +45,19 @@ const formSchema = z.object({
   color: z.string().optional(),
   year: z.string().min(4, "Year is required"),
   vin_number: z.string().optional(),
-  plate_number: z.string().optional(),
+  plate_number: z.string().min(1, "Plate number is required"),
   state: z.string().min(2).max(2),
   registration_expires_at: z.string().optional(),
   insurance_expires_at: z.string().optional(),
-  price: z.string().optional(),
+  price: z.string().min(1, "Price is required"),
   status: z.string().min(1),
   notes: z.string().optional(),
+  installation_fee_for_safety_equipment: z.string().optional(),
+  insurance_expenses: z.string().optional(),
+  service_expenses: z.string().optional(),
+  maintenance_costs: z.string().optional(),
+  full_coverage_auto_insurance: z.string().optional(),
+  other_expenses: z.string().optional(),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -73,6 +79,12 @@ const AddCar = () => {
       status: "available",
       notes: "",
       price: "",
+      installation_fee_for_safety_equipment: "",
+      insurance_expenses: "",
+      service_expenses: "",
+      maintenance_costs: "",
+      full_coverage_auto_insurance: "",
+      other_expenses: "",
     },
   })
 
@@ -93,10 +105,16 @@ const AddCar = () => {
     mutation.mutate({
       ...data,
       year: Number(data.year),
-      price: data.price ? Number(data.price) : undefined,
+      price: Number(data.price),
       wav: data.wav ? 1 : 0,
       registration_expires_at: data.registration_expires_at || undefined,
       insurance_expires_at: data.insurance_expires_at || undefined,
+      installation_fee_for_safety_equipment: data.installation_fee_for_safety_equipment ? Number(data.installation_fee_for_safety_equipment) : undefined,
+      insurance_expenses: data.insurance_expenses ? Number(data.insurance_expenses) : undefined,
+      service_expenses: data.service_expenses ? Number(data.service_expenses) : undefined,
+      maintenance_costs: data.maintenance_costs ? Number(data.maintenance_costs) : undefined,
+      full_coverage_auto_insurance: data.full_coverage_auto_insurance ? Number(data.full_coverage_auto_insurance) : undefined,
+      other_expenses: data.other_expenses ? Number(data.other_expenses) : undefined,
     })
   }
 
@@ -162,7 +180,7 @@ const AddCar = () => {
                   name="plate_number"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Plate Number</FormLabel>
+                      <FormLabel>Plate Number *</FormLabel>
                       <FormControl>
                         <Input {...field} placeholder="T761657C" />
                       </FormControl>
@@ -236,7 +254,85 @@ const AddCar = () => {
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Price</FormLabel>
+                      <FormLabel>Price *</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField<FormData, "installation_fee_for_safety_equipment">
+                  control={form.control}
+                  name="installation_fee_for_safety_equipment"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Install Fee (Safety)</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField<FormData, "insurance_expenses">
+                  control={form.control}
+                  name="insurance_expenses"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Insurance Exp.</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField<FormData, "service_expenses">
+                  control={form.control}
+                  name="service_expenses"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Service Exp.</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField<FormData, "maintenance_costs">
+                  control={form.control}
+                  name="maintenance_costs"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Maintenance Costs</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField<FormData, "full_coverage_auto_insurance">
+                  control={form.control}
+                  name="full_coverage_auto_insurance"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Full Coverage Ins.</FormLabel>
+                      <FormControl>
+                        <Input type="number" step="0.01" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField<FormData, "other_expenses">
+                  control={form.control}
+                  name="other_expenses"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Other Expenses</FormLabel>
                       <FormControl>
                         <Input type="number" step="0.01" {...field} />
                       </FormControl>

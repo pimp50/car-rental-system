@@ -3,6 +3,9 @@ import type { ApiError } from "./client"
 
 function extractErrorMessage(err: ApiError): string {
   if (err instanceof AxiosError) {
+    if (err.response?.data?.detail) {
+      return err.response.data.detail
+    }
     return err.message
   }
 

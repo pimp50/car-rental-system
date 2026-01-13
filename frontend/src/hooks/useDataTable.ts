@@ -13,6 +13,7 @@ interface UseDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   pageCount?: number
   id?: string
+  initialVisibility?: VisibilityState
 }
 
 export function useDataTable<TData, TValue>({
@@ -20,6 +21,7 @@ export function useDataTable<TData, TValue>({
   columns,
   pageCount,
   id,
+  initialVisibility = {},
 }: UseDataTableProps<TData, TValue>) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     () => {
@@ -33,7 +35,7 @@ export function useDataTable<TData, TValue>({
           }
         }
       }
-      return {}
+      return initialVisibility
     },
   )
 

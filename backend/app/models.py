@@ -264,7 +264,7 @@ class CarBase(SQLModel):
     color: str | None = Field(default=None, max_length=64)
     year: int
     vin_number: str | None = Field(default=None, max_length=64)
-    plate_number: str | None = Field(default=None, max_length=16)
+    plate_number: str = Field(unique=True, index=True, min_length=1, max_length=16)
     state: str = Field(default="NY", max_length=2)
     registration_expires_at: datetime | None = None
     insurance_expires_at: datetime | None = None
@@ -288,7 +288,7 @@ class CarUpdate(SQLModel):
     color: str | None = Field(default=None, max_length=64)
     year: int | None = None
     vin_number: str | None = Field(default=None, max_length=64)
-    plate_number: str | None = Field(default=None, max_length=16)
+    plate_number: str | None = Field(default=None, min_length=1, max_length=16)
     state: str | None = Field(default=None, max_length=2)
     registration_expires_at: datetime | None = None
     insurance_expires_at: datetime | None = None
@@ -304,9 +304,17 @@ class CarUpdate(SQLModel):
 
 class Car(CarBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, sa_type=UUID())
+    car_id: int | None = Field(default=None, primary_key=False, sa_column_kwargs={"autoincrement": True, "unique": True})
+    create_by: str | None = Field(default=None, max_length=255)
+    create_time: datetime | None = Field(default_factory=datetime.utcnow)
+    update_time: datetime | None = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
 
 class CarPublic(CarBase):
     id: uuid.UUID
+    car_id: int | None
+    create_by: str | None
+    create_time: datetime | None
+    update_time: datetime | None
 
 class CarsPublic(SQLModel):
     data: list[CarPublic]
