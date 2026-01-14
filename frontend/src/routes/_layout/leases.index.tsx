@@ -22,26 +22,34 @@ function getLeasesQueryOptions({
   plate_number,
   renter_name,
   status,
+  skip,
+  limit,
 }: {
   plate_number?: string
   renter_name?: string
   status?: string
+  skip?: number
+  limit?: number
 } = {}) {
   return {
-    queryFn: () => getLeases(0, 100, plate_number, renter_name, status),
-    queryKey: ["leases", { plate_number, renter_name, status }],
+    queryFn: () => getLeases(skip, limit, plate_number, renter_name, status),
+    queryKey: ["leases", { plate_number, renter_name, status, skip, limit }],
   }
 }
 
 export const Route = createFileRoute("/_layout/leases/")({
   component: Leases,
-  head: () => ({ meta: [{ title: "Leases - Inspiration" }] }),
+  head: () => ({ meta: [{ title: "Plate Rentals - Inspiration" }] }),
 })
 
 function Leases() {
   const [plateNumber, setPlateNumber] = useState("")
   const [renterName, setRenterName] = useState("")
   const [status, setStatus] = useState("all")
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  })
   const navigate = useNavigate()
 
   const { data: leases, isPending } = useQuery(
@@ -49,14 +57,18 @@ function Leases() {
       plate_number: plateNumber || undefined,
       renter_name: renterName || undefined,
       status: status === "all" ? undefined : status,
+      skip: pagination.pageIndex * pagination.pageSize,
+      limit: pagination.pageSize,
     }),
   )
 
   const table = useDataTable({
     data: leases?.data ?? [],
     columns: leaseColumns,
-    pageCount: leases?.count,
-    id: "leases-table"
+    pageCount: leases ? Math.ceil(leases.count / pagination.pageSize) : 0,
+    id: "leases-table",
+    pagination,
+    onPaginationChange: setPagination,
   })
 
   if (isPending) {
@@ -64,9 +76,9 @@ function Leases() {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Leases</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Plate Rentals</h1>
             <p className="text-muted-foreground">
-              Create and manage plate leases
+              Create and manage plate rentals
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -125,9 +137,9 @@ function Leases() {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
             <div>
-            <h1 className="text-2xl font-bold tracking-tight">Leases</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Plate Rentals</h1>
             <p className="text-muted-foreground">
-                Create and manage plate leases
+                Create and manage plate rentals
             </p>
             </div>
             <div className="flex items-center gap-2">
@@ -150,9 +162,9 @@ function Leases() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Leases</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Plate Rentals</h1>
           <p className="text-muted-foreground">
-            Create and manage plate leases
+            Create and manage plate rentals
           </p>
         </div>
         <div className="flex items-center gap-2">

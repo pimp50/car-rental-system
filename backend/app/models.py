@@ -1,11 +1,16 @@
 import uuid
 from datetime import date, datetime
+from zoneinfo import ZoneInfo
 
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.types import CHAR, TypeDecorator
 from sqlmodel import Field, Relationship, SQLModel
 
 from pydantic import EmailStr
+
+def get_ny_time():
+    """Get current time in New York timezone as naive datetime (local time)"""
+    return datetime.now(ZoneInfo("America/New_York")).replace(tzinfo=None)
 
 class UUID(TypeDecorator):
     impl = CHAR
@@ -307,8 +312,8 @@ class Car(CarBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, sa_type=UUID())
     car_id: int | None = Field(default=None, primary_key=False, sa_column_kwargs={"autoincrement": True, "unique": True})
     create_by: str | None = Field(default=None, max_length=255)
-    create_time: datetime | None = Field(default_factory=datetime.utcnow)
-    update_time: datetime | None = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
+    create_time: datetime | None = Field(default_factory=get_ny_time)
+    update_time: datetime | None = Field(default_factory=get_ny_time, sa_column_kwargs={"onupdate": get_ny_time})
     rentals: list["CarRental"] = Relationship(back_populates="car", cascade_delete=True)
 
 class CarPublic(CarBase):
@@ -325,20 +330,33 @@ class CarsPublic(SQLModel):
 class CarRentalBase(SQLModel):
     start_date: date
     end_date: date | None = None
-    rent_amount: float
+    total_amount: float = Field(default=0.0)
     frequency: str = Field(default="monthly", max_length=16)
     status: str = Field(default="active", max_length=32)
+    payment_status: str = Field(default="unpaid", max_length=16) # paid, unpaid
+    paid_amount: float = Field(default=0.0)
+    remaining_amount: float = Field(default=0.0)
+    create_by: str | None = Field(default=None, max_length=255)
+    create_time: datetime | None = Field(default_factory=get_ny_time)
+    update_time: datetime | None = Field(default_factory=get_ny_time, sa_column_kwargs={"onupdate": get_ny_time})
 
-class CarRentalCreate(CarRentalBase):
+class CarRentalCreate(SQLModel):
     car_id: uuid.UUID
     renter_id: uuid.UUID
+    start_date: date
+    end_date: date | None = None
+    total_amount: float
+    frequency: str = "monthly"
 
 class CarRentalUpdate(SQLModel):
     start_date: date | None = None
     end_date: date | None = None
-    rent_amount: float | None = None
-    frequency: str | None = Field(default=None, max_length=16)
-    status: str | None = Field(default=None, max_length=32)
+    total_amount: float | None = None
+    frequency: str | None = None
+    status: str | None = None
+    payment_status: str | None = None
+    paid_amount: float | None = None
+    remaining_amount: float | None = None
 
 class CarRental(CarRentalBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, sa_type=UUID())
@@ -346,11 +364,43 @@ class CarRental(CarRentalBase, table=True):
     renter_id: uuid.UUID = Field(foreign_key="renter.id", nullable=False, ondelete="CASCADE", sa_type=UUID())
     car: Car | None = Relationship(back_populates="rentals")
     renter: Renter | None = Relationship(back_populates="car_rentals")
+    payments: list["RentalPayment"] = Relationship(back_populates="rental", cascade_delete=True)
 
 class CarRentalPublic(CarRentalBase):
     id: uuid.UUID
     car_id: uuid.UUID
     renter_id: uuid.UUID
+    car_model: str | None = None
+    car_short_id: int | None = None
+    renter_name: str | None = None
+
+
+class RentalPaymentBase(SQLModel):
+    amount: float
+    payment_date: date = Field(default_factory=date.today)
+    note: str | None = Field(default=None, max_length=255)
+
+
+class RentalPayment(RentalPaymentBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, sa_type=UUID())
+    rental_id: uuid.UUID = Field(foreign_key="carrental.id", nullable=False, ondelete="CASCADE", sa_type=UUID())
+    rental: CarRental = Relationship(back_populates="payments")
+    create_by: str | None = Field(default=None, max_length=255)
+    create_time: datetime | None = Field(default_factory=get_ny_time)
+
+
+class RentalPaymentPublic(RentalPaymentBase):
+    id: uuid.UUID
+    rental_id: uuid.UUID
+    create_by: str | None
+    create_time: datetime | None
+
+
+class RentalPaymentsPublic(SQLModel):
+    data: list[RentalPaymentPublic]
+    count: int
+
+
 
 class CarRentalsPublic(SQLModel):
     data: list[CarRentalPublic]

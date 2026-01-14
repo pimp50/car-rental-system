@@ -1,4 +1,5 @@
 
+import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { Search } from "lucide-react"
@@ -25,17 +26,30 @@ function getRentalsQueryOptions({
 
 export const Route = createFileRoute("/_layout/rentals/")({
   component: Rentals,
-  head: () => ({ meta: [{ title: "Rentals - Car Rental System" }] }),
+  head: () => ({ meta: [{ title: "Car Rentals - Car Rental System" }] }),
 })
 
 function Rentals() {
-  const { data: rentals, isPending } = useQuery(getRentalsQueryOptions())
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+
+  const { data: rentals, isPending } = useQuery(
+    getRentalsQueryOptions({
+      skip: pagination.pageIndex * pagination.pageSize,
+      limit: pagination.pageSize,
+    })
+  )
 
   const table = useDataTable({
     data: rentals?.data ?? [],
     columns: rentalColumns,
-    pageCount: rentals?.count,
+    pageCount: rentals ? Math.ceil(rentals.count / pagination.pageSize) : 0,
     id: "rentals-table",
+    initialVisibility: { id: false },
+    pagination,
+    onPaginationChange: setPagination,
   })
 
   if (isPending) {
@@ -43,7 +57,7 @@ function Rentals() {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Rentals</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Car Rentals</h1>
             <p className="text-muted-foreground">
               Manage car rentals
             </p>
@@ -63,7 +77,7 @@ function Rentals() {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Rentals</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Car Rentals</h1>
             <p className="text-muted-foreground">
               Manage car rentals
             </p>
@@ -84,11 +98,22 @@ function Rentals() {
     )
   }
 
+  const totalAmount = rentals?.data.reduce((sum, rental) => sum + rental.total_amount, 0) ?? 0
+  const paidAmount = rentals?.data.reduce((sum, rental) => sum + rental.paid_amount, 0) ?? 0
+  const remainingAmount = rentals?.data.reduce((sum, rental) => sum + (rental.remaining_amount ?? 0), 0) ?? 0
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount)
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Rentals</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Car Rentals</h1>
           <p className="text-muted-foreground">
             Manage car rentals
           </p>
@@ -99,7 +124,16 @@ function Rentals() {
         </div>
       </div>
 
-      <DataTable table={table} />
+      <DataTable 
+        table={table} 
+        footer={
+          <div className="text-sm font-medium flex gap-4">
+            <span>Total Rental Amount Above: <span className="text-red-500">{formatCurrency(totalAmount)}</span></span>
+            <span>Received Amount: <span className="text-red-500">{formatCurrency(paidAmount)}</span></span>
+            <span>Receivable Amount: <span className="text-red-500">{formatCurrency(remainingAmount)}</span></span>
+          </div>
+        }
+      />
     </div>
   )
 }

@@ -24,6 +24,8 @@ import {
 } from "@/components/ui/alert-dialog"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
+import { PayRentalDialog } from "./PayRentalDialog"
+import { PaymentRecordsDialog } from "./PaymentRecordsDialog"
 
 interface RentalActionsMenuProps {
   rental: CarRentalPublic
@@ -32,6 +34,8 @@ interface RentalActionsMenuProps {
 export function RentalActionsMenu({ rental }: RentalActionsMenuProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [payDialogOpen, setPayDialogOpen] = useState(false)
+  const [recordsDialogOpen, setRecordsDialogOpen] = useState(false)
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
 
@@ -47,23 +51,41 @@ export function RentalActionsMenu({ rental }: RentalActionsMenuProps) {
 
   return (
     <>
-      <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onClick={() => setDeleteDialogOpen(true)}
-            className="text-destructive focus:text-destructive"
+      <div className="flex items-center gap-4 justify-center">
+        {rental.payment_status === "unpaid" && (
+          <span 
+            className="text-primary hover:underline cursor-pointer text-sm font-medium"
+            onClick={() => setPayDialogOpen(true)}
           >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            Pay
+          </span>
+        )}
+        
+        <span 
+          className="text-primary hover:underline cursor-pointer text-sm font-medium"
+          onClick={() => setRecordsDialogOpen(true)}
+        >
+          View Records
+        </span>
+        
+        <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={() => setDeleteDialogOpen(true)}
+              className="text-destructive focus:text-destructive"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
@@ -89,6 +111,22 @@ export function RentalActionsMenu({ rental }: RentalActionsMenuProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      
+      {payDialogOpen && (
+        <PayRentalDialog 
+          rental={rental} 
+          isOpen={payDialogOpen} 
+          onClose={() => setPayDialogOpen(false)} 
+        />
+      )}
+
+      {recordsDialogOpen && (
+        <PaymentRecordsDialog
+          rental={rental}
+          isOpen={recordsDialogOpen}
+          onClose={() => setRecordsDialogOpen(false)}
+        />
+      )}
     </>
   )
 }

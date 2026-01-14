@@ -1,4 +1,5 @@
 
+import { format } from "date-fns"
 import type { ColumnDef } from "@tanstack/react-table"
 import { Check, Copy } from "lucide-react"
 
@@ -6,6 +7,7 @@ import type { CarRentalPublic } from "@/api/rentals"
 import { Button } from "@/components/ui/button"
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard"
 import { RentalActionsMenu } from "./RentalActionsMenu"
+import { DataTableColumnHeader } from "@/components/Common/DataTableColumnHeader"
 
 function CopyId({ id }: { id: string }) {
   const [copiedText, copy] = useCopyToClipboard()
@@ -33,46 +35,107 @@ function CopyId({ id }: { id: string }) {
 export const rentalColumns: ColumnDef<CarRentalPublic>[] = [
   {
     accessorKey: "id",
-    header: "ID",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Rental ID" />
+    ),
     cell: ({ row }) => <CopyId id={row.original.id} />,
   },
   {
-    accessorKey: "car_id",
-    header: "Car ID",
-    cell: ({ row }) => <CopyId id={row.original.car_id} />,
+    accessorKey: "car_short_id",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Car ID" />
+    ),
+    cell: ({ row }) => (
+      <span className="font-medium">{row.original.car_short_id}</span>
+    ),
   },
   {
-    accessorKey: "renter_id",
-    header: "Renter ID",
-    cell: ({ row }) => <CopyId id={row.original.renter_id} />,
+    accessorKey: "car_model",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Model" />
+    ),
+  },
+  {
+    accessorKey: "renter_name",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Renter" />
+    ),
   },
   {
     accessorKey: "start_date",
-    header: "Start Date",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Start Date" />
+    ),
   },
   {
     accessorKey: "end_date",
-    header: "End Date",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="End Date" />
+    ),
+    cell: ({ row }) => (
+      <span>{row.original.end_date || "-"}</span>
+    ),
   },
   {
-    accessorKey: "rent_amount",
-    header: "Amount",
+    accessorKey: "total_amount",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Total Amount" />
+    ),
+    cell: ({ row }) => (
+      <span>${row.original.total_amount.toFixed(2)}</span>
+    ),
   },
   {
-    accessorKey: "frequency",
-    header: "Frequency",
+    accessorKey: "remaining_amount",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Remaining" />
+    ),
+    cell: ({ row }) => (
+      <span className="font-semibold text-orange-600">
+        ${row.original.remaining_amount?.toFixed(2) ?? row.original.total_amount.toFixed(2)}
+      </span>
+    ),
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "payment_status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Payment Status" />
+    ),
+    cell: ({ row }) => {
+      const status = row.original.payment_status
+      return (
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-semibold ${
+            status === "paid"
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
+          {status.toUpperCase()}
+        </span>
+      )
+    },
   },
   {
     id: "actions",
-    header: () => <span className="sr-only">Actions</span>,
+    header: "Operation",
     cell: ({ row }) => (
-      <div className="flex justify-end">
+      <div className="flex justify-center">
         <RentalActionsMenu rental={row.original} />
       </div>
+    ),
+  },
+  {
+    accessorKey: "update_time",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Updated At" />
+    ),
+    cell: ({ row }) => (
+      <span className="text-muted-foreground text-sm">
+        {row.original.update_time 
+          ? format(new Date(row.original.update_time), "yyyy-MM-dd HH:mm") 
+          : "-"}
+      </span>
     ),
   },
 ]

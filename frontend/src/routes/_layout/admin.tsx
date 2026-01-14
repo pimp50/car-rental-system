@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 
@@ -10,10 +11,16 @@ import PendingUsers from "@/components/Pending/PendingUsers"
 import useAuth from "@/hooks/useAuth"
 import { useDataTable } from "@/hooks/useDataTable"
 
-function getUsersQueryOptions() {
+function getUsersQueryOptions({
+  skip,
+  limit,
+}: {
+  skip?: number
+  limit?: number
+} = {}) {
   return {
-    queryFn: () => UsersService.readUsers({ skip: 0, limit: 100 }),
-    queryKey: ["users"],
+    queryFn: () => UsersService.readUsers({ skip, limit }),
+    queryKey: ["users", { skip, limit }],
   }
 }
 
@@ -30,7 +37,17 @@ export const Route = createFileRoute("/_layout/admin")({
 
 function Admin() {
   const { user: currentUser } = useAuth()
-  const { data: users, isPending } = useQuery(getUsersQueryOptions())
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+
+  const { data: users, isPending } = useQuery(
+    getUsersQueryOptions({
+      skip: pagination.pageIndex * pagination.pageSize,
+      limit: pagination.pageSize,
+    })
+  )
 
   const tableData: UserTableData[] = (users?.data ?? []).map((user: UserPublic) => ({
     ...user,
@@ -40,8 +57,10 @@ function Admin() {
   const table = useDataTable({
     data: tableData,
     columns: columns,
-    pageCount: users?.count,
-    id: "admin-users-table"
+    pageCount: users ? Math.ceil(users.count / pagination.pageSize) : 0,
+    id: "admin-users-table",
+    pagination,
+    onPaginationChange: setPagination,
   })
 
   if (isPending) {

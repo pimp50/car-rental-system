@@ -11,10 +11,10 @@ import { renterColumns } from "@/components/Renters/columns"
 import { Input } from "@/components/ui/input"
 import { useDataTable } from "@/hooks/useDataTable"
 
-function getRentersQueryOptions({ search }: { search?: string } = {}) {
+function getRentersQueryOptions({ search, skip, limit }: { search?: string, skip?: number, limit?: number } = {}) {
   return {
-    queryFn: () => getRenters(0, 100, search),
-    queryKey: ["renters", { search }],
+    queryFn: () => getRenters(skip, limit, search),
+    queryKey: ["renters", { search, skip, limit }],
   }
 }
 
@@ -25,17 +25,27 @@ export const Route = createFileRoute("/_layout/renters/")({
 
 function Renters() {
   const [search, setSearch] = useState("")
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  })
   const navigate = useNavigate()
 
   const { data: renters, isPending } = useQuery(
-    getRentersQueryOptions({ search: search || undefined }),
+    getRentersQueryOptions({ 
+        search: search || undefined,
+        skip: pagination.pageIndex * pagination.pageSize,
+        limit: pagination.pageSize,
+    }),
   )
 
   const table = useDataTable({
     data: renters?.data ?? [],
     columns: renterColumns,
-    pageCount: renters?.count,
-    id: "renters-table"
+    pageCount: renters ? Math.ceil(renters.count / pagination.pageSize) : 0,
+    id: "renters-table",
+    pagination,
+    onPaginationChange: setPagination,
   })
 
   if (isPending) {

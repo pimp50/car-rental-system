@@ -21,13 +21,17 @@ import { useDataTable } from "@/hooks/useDataTable"
 function getCarsQueryOptions({
   model,
   status,
+  skip,
+  limit,
 }: {
   model?: string
   status?: string
+  skip?: number
+  limit?: number
 } = {}) {
   return {
-    queryFn: () => getCars(0, 100, model, undefined, status),
-    queryKey: ["cars", { model, status }],
+    queryFn: () => getCars(skip, limit, model, undefined, status),
+    queryKey: ["cars", { model, status, skip, limit }],
   }
 }
 
@@ -38,19 +42,25 @@ export const Route = createFileRoute("/_layout/cars/")({
 function Cars() {
   const [model, setModel] = useState("")
   const [status, setStatus] = useState("all")
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  })
   const navigate = useNavigate()
 
   const { data: cars, isPending } = useQuery(
     getCarsQueryOptions({
       model: model || undefined,
       status: status === "all" ? undefined : status,
+      skip: pagination.pageIndex * pagination.pageSize,
+      limit: pagination.pageSize,
     }),
   )
 
   const table = useDataTable({
     data: cars?.data ?? [],
     columns: carColumns,
-    pageCount: cars?.count,
+    pageCount: cars ? Math.ceil(cars.count / pagination.pageSize) : 0,
     id: "cars-table",
     initialVisibility: {
         id: false,
@@ -60,7 +70,9 @@ function Cars() {
         maintenance_costs: false,
         full_coverage_auto_insurance: false,
         other_expenses: false,
-    }
+    },
+    pagination,
+    onPaginationChange: setPagination,
   })
 
   if (isPending) {

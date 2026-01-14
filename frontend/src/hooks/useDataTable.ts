@@ -1,8 +1,10 @@
 import {
   type ColumnDef,
   type ColumnOrderState,
+  type SortingState,
+  type PaginationState,
   getCoreRowModel,
-  getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
   type VisibilityState,
 } from "@tanstack/react-table"
@@ -14,6 +16,8 @@ interface UseDataTableProps<TData, TValue> {
   pageCount?: number
   id?: string
   initialVisibility?: VisibilityState
+  pagination?: PaginationState
+  onPaginationChange?: (pagination: PaginationState) => void
 }
 
 export function useDataTable<TData, TValue>({
@@ -22,6 +26,8 @@ export function useDataTable<TData, TValue>({
   pageCount,
   id,
   initialVisibility = {},
+  pagination,
+  onPaginationChange,
 }: UseDataTableProps<TData, TValue>) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     () => {
@@ -53,6 +59,28 @@ export function useDataTable<TData, TValue>({
     return []
   })
 
+  const [sorting, setSorting] = useState<SortingState>([])
+
+  // Internal state for pagination if not controlled
+  const [internalPagination, setInternalPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+
+  // Use controlled or internal state
+  const actualPagination = pagination ?? internalPagination
+  const handlePaginationChange = (updaterOrValue: any) => {
+    const newPagination = typeof updaterOrValue === 'function' 
+      ? updaterOrValue(actualPagination)
+      : updaterOrValue
+    
+    if (onPaginationChange) {
+      onPaginationChange(newPagination)
+    } else {
+      setInternalPagination(newPagination)
+    }
+  }
+
   // Save state to localStorage on change
   useEffect(() => {
     if (id) {
@@ -72,12 +100,18 @@ export function useDataTable<TData, TValue>({
     state: {
       columnVisibility,
       columnOrder,
+      sorting,
+      pagination: actualPagination,
     },
     onColumnVisibilityChange: setColumnVisibility,
     onColumnOrderChange: setColumnOrder,
+    onSortingChange: setSorting,
+    onPaginationChange: handlePaginationChange,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    pageCount: pageCount,
+    // getPaginationRowModel: getPaginationRowModel(), // Removed because we do manual pagination
+    getSortedRowModel: getSortedRowModel(),
+    pageCount: pageCount ?? -1, // -1 means unknown page count, or use provided
+    manualPagination: true,
   })
 
   return table

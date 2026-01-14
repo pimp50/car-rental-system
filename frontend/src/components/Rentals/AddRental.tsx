@@ -45,7 +45,7 @@ const formSchema = z.object({
   renter_id: z.string().min(1, "Renter is required"),
   start_date: z.string().min(1, "Start date is required"),
   end_date: z.string().optional(),
-  rent_amount: z.string().min(1, "Rent amount is required"),
+  total_amount: z.string().min(1, "Total amount is required"),
   frequency: z.string().default("monthly"),
   status: z.string().default("active"),
 })
@@ -75,8 +75,8 @@ const AddRental = () => {
       car_id: "",
       renter_id: "",
       start_date: new Date().toISOString().split("T")[0],
-      end_date: "",
-      rent_amount: "",
+      end_date: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().split("T")[0],
+      total_amount: "",
       frequency: "monthly",
       status: "active",
     },
@@ -99,7 +99,7 @@ const AddRental = () => {
   const onSubmit = (data: FormData) => {
     mutation.mutate({
       ...data,
-      rent_amount: Number(data.rent_amount),
+      total_amount: Number(data.total_amount),
       end_date: data.end_date || undefined,
     })
   }
@@ -200,10 +200,10 @@ const AddRental = () => {
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="rent_amount"
+                name="total_amount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Amount</FormLabel>
+                    <FormLabel>Total Amount</FormLabel>
                     <FormControl>
                       <Input type="number" step="0.01" {...field} />
                     </FormControl>
@@ -230,6 +230,7 @@ const AddRental = () => {
                         <SelectItem value="daily">Daily</SelectItem>
                         <SelectItem value="weekly">Weekly</SelectItem>
                         <SelectItem value="monthly">Monthly</SelectItem>
+                        <SelectItem value="-">-</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

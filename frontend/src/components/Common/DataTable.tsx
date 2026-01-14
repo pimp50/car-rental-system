@@ -30,11 +30,13 @@ import {
 interface DataTableProps<TData> {
   table: TableType<TData>
   onRowClick?: (row: TData) => void
+  footer?: React.ReactNode
 }
 
 export function DataTable<TData>({
   table,
   onRowClick,
+  footer,
 }: DataTableProps<TData>) {
   const [draggingColumnId, setDraggingColumnId] = useState<string | null>(null)
 
@@ -123,6 +125,12 @@ export function DataTable<TData>({
           )}
         </TableBody>
       </Table>
+
+      {footer && (
+        <div className="flex justify-end px-4">
+          {footer}
+        </div>
+      )}
 
       {table.getPageCount() > 1 && (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 border-t bg-muted/20">
