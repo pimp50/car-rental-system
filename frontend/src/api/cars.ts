@@ -9,7 +9,7 @@ export type CarPublic = {
   color?: string | null
   year: number
   vin_number?: string | null
-  plate_number: string
+  plate_number?: string | null
   state: string
   registration_expires_at?: string | null
   insurance_expires_at?: string | null
@@ -36,7 +36,7 @@ export type CarCreate = {
   color?: string
   year: number
   vin_number?: string
-  plate_number: string
+  plate_number?: string
   state?: string
   registration_expires_at?: string
   insurance_expires_at?: string

@@ -68,13 +68,18 @@ def create_car(*, session: SessionDep, current_user: CurrentUser, car_in: CarCre
     """
     _ = current_user
     
+    # Handle empty string as None
+    if car_in.plate_number == "":
+        car_in.plate_number = None
+
     # Check if plate number already exists
-    existing_car = session.exec(select(Car).where(Car.plate_number == car_in.plate_number)).first()
-    if existing_car:
-        raise HTTPException(
-            status_code=400,
-            detail=f"A car with plate number '{car_in.plate_number}' already exists."
-        )
+    if car_in.plate_number:
+        existing_car = session.exec(select(Car).where(Car.plate_number == car_in.plate_number)).first()
+        if existing_car:
+            raise HTTPException(
+                status_code=400,
+                detail=f"A car with plate number '{car_in.plate_number}' already exists."
+            )
 
     car = Car.model_validate(car_in)
     
@@ -115,6 +120,10 @@ def update_car(
     if not car:
         raise HTTPException(status_code=404, detail="Car not found")
         
+    # Handle empty string as None
+    if car_in.plate_number == "":
+        car_in.plate_number = None
+
     # Check uniqueness of plate_number if it's being updated
     if car_in.plate_number and car_in.plate_number != car.plate_number:
         existing_car = session.exec(select(Car).where(Car.plate_number == car_in.plate_number)).first()

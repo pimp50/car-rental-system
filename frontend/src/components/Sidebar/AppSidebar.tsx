@@ -27,6 +27,7 @@ const baseItems: Item[] = [
   { icon: BadgeCheck, title: "Plates", path: "/plates" },
   { icon: Contact, title: "Renters", path: "/renters" },
   { icon: CalendarClock, title: "Leases", path: "/leases" },
+  { icon: Car, title: "Rentals", path: "/rentals" },
 ]
 
 export function AppSidebar() {

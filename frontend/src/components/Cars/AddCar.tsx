@@ -45,7 +45,7 @@ const formSchema = z.object({
   color: z.string().optional(),
   year: z.string().min(4, "Year is required"),
   vin_number: z.string().optional(),
-  plate_number: z.string().min(1, "Plate number is required"),
+  plate_number: z.string().optional(),
   state: z.string().min(2).max(2),
   registration_expires_at: z.string().optional(),
   insurance_expires_at: z.string().optional(),
@@ -180,7 +180,7 @@ const AddCar = () => {
                   name="plate_number"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Plate Number *</FormLabel>
+                      <FormLabel>Plate Number</FormLabel>
                       <FormControl>
                         <Input {...field} placeholder="T761657C" />
                       </FormControl>

@@ -169,6 +169,7 @@ class RenterUpdate(SQLModel):
 class Renter(RenterBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, sa_type=UUID())
     leases: list["PlateLease"] = Relationship(back_populates="renter", cascade_delete=True)
+    car_rentals: list["CarRental"] = Relationship(back_populates="renter", cascade_delete=True)
 
 
 class RenterPublic(RenterBase):
@@ -264,7 +265,7 @@ class CarBase(SQLModel):
     color: str | None = Field(default=None, max_length=64)
     year: int
     vin_number: str | None = Field(default=None, max_length=64)
-    plate_number: str = Field(unique=True, index=True, min_length=1, max_length=16)
+    plate_number: str | None = Field(default=None, unique=True, index=True, max_length=16)
     state: str = Field(default="NY", max_length=2)
     registration_expires_at: datetime | None = None
     insurance_expires_at: datetime | None = None
@@ -308,6 +309,7 @@ class Car(CarBase, table=True):
     create_by: str | None = Field(default=None, max_length=255)
     create_time: datetime | None = Field(default_factory=datetime.utcnow)
     update_time: datetime | None = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
+    rentals: list["CarRental"] = Relationship(back_populates="car", cascade_delete=True)
 
 class CarPublic(CarBase):
     id: uuid.UUID
@@ -318,4 +320,38 @@ class CarPublic(CarBase):
 
 class CarsPublic(SQLModel):
     data: list[CarPublic]
+    count: int
+
+class CarRentalBase(SQLModel):
+    start_date: date
+    end_date: date | None = None
+    rent_amount: float
+    frequency: str = Field(default="monthly", max_length=16)
+    status: str = Field(default="active", max_length=32)
+
+class CarRentalCreate(CarRentalBase):
+    car_id: uuid.UUID
+    renter_id: uuid.UUID
+
+class CarRentalUpdate(SQLModel):
+    start_date: date | None = None
+    end_date: date | None = None
+    rent_amount: float | None = None
+    frequency: str | None = Field(default=None, max_length=16)
+    status: str | None = Field(default=None, max_length=32)
+
+class CarRental(CarRentalBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, sa_type=UUID())
+    car_id: uuid.UUID = Field(foreign_key="car.id", nullable=False, ondelete="CASCADE", sa_type=UUID())
+    renter_id: uuid.UUID = Field(foreign_key="renter.id", nullable=False, ondelete="CASCADE", sa_type=UUID())
+    car: Car | None = Relationship(back_populates="rentals")
+    renter: Renter | None = Relationship(back_populates="car_rentals")
+
+class CarRentalPublic(CarRentalBase):
+    id: uuid.UUID
+    car_id: uuid.UUID
+    renter_id: uuid.UUID
+
+class CarRentalsPublic(SQLModel):
+    data: list[CarRentalPublic]
     count: int
