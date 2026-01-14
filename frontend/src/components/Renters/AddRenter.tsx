@@ -162,7 +162,7 @@ const AddRenter = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="DL number"
+                        placeholder="DRIVER LICENSE"
                         type="text"
                         {...field}
                         required

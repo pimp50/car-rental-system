@@ -142,7 +142,7 @@ function RenterDetail() {
                   <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input placeholder="DL number" {...field} />
+                  <Input placeholder="DRIVER LICENSE" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

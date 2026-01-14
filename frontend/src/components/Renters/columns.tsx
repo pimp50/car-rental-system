@@ -46,7 +46,7 @@ export const renterColumns: ColumnDef<RenterPublic>[] = [
   },
   { accessorKey: "phone", header: "Phone" },
   { accessorKey: "email", header: "Email" },
-  { accessorKey: "driver_license_number", header: "DL Number" },
+  { accessorKey: "driver_license_number", header: "DRIVER LICENSE" },
   { accessorKey: "driver_license_state", header: "State" },
   {
     accessorKey: "address",
