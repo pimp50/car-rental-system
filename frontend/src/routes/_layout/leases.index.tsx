@@ -162,6 +162,17 @@ function Leases() {
     )
   }
 
+  const totalAmount = leases?.data.reduce((sum, lease) => sum + lease.total_amount, 0) ?? 0
+  const paidAmount = leases?.data.reduce((sum, lease) => sum + lease.paid_amount, 0) ?? 0
+  const remainingAmount = leases?.data.reduce((sum, lease) => sum + (lease.remaining_amount ?? 0), 0) ?? 0
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount)
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -213,6 +224,13 @@ function Leases() {
 
       <DataTable
         table={table}
+        footer={
+          <div className="text-sm font-medium flex gap-4">
+            <span>Total Rental Amount Above: <span className="text-red-500">{formatCurrency(totalAmount)}</span></span>
+            <span>Received Amount: <span className="text-red-500">{formatCurrency(paidAmount)}</span></span>
+            <span>Receivable Amount: <span className="text-red-500">{formatCurrency(remainingAmount)}</span></span>
+          </div>
+        }
       />
     </div>
   )
