@@ -1,6 +1,6 @@
 import {
   BadgeCheck,
-  Briefcase,
+  // Briefcase,
   CalendarClock,
   Car,
   KeyRound,
@@ -23,7 +23,7 @@ import { User } from "./User"
 
 const baseItems: Item[] = [
   { icon: Home, title: "Dashboard", path: "/" },
-  { icon: Briefcase, title: "Items", path: "/items" },
+  // { icon: Briefcase, title: "Items", path: "/items" },
   { icon: Car, title: "Cars", path: "/cars" },
   { icon: BadgeCheck, title: "Plates", path: "/plates" },
   { icon: Contact, title: "Renters", path: "/renters" },

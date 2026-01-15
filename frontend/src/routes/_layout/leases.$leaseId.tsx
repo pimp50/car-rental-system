@@ -33,9 +33,10 @@ const formSchema = z.object({
   renter_id: z.string().min(1, { message: "Renter is required" }),
   start_date: z.string().min(1, { message: "Start date is required" }),
   end_date: z.string().optional().or(z.literal("")),
-  rent_amount: z.string().min(1, { message: "Amount is required" }),
+  total_amount: z.string().min(1, { message: "Amount is required" }),
   frequency: z.string().min(1, { message: "Frequency is required" }),
   status: z.string().min(1, { message: "Status is required" }),
+  rental_type: z.string().min(1),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -75,9 +76,10 @@ function LeaseDetail() {
           renter_id: lease.renter_id,
           start_date: lease.start_date,
           end_date: lease.end_date || "",
-          rent_amount: String(lease.rent_amount),
+          total_amount: String(lease.total_amount),
           frequency: lease.frequency,
           status: lease.status,
+          rental_type: lease.rental_type || "lease",
         }
       : undefined,
   })
@@ -98,9 +100,10 @@ function LeaseDetail() {
       renter_id: data.renter_id,
       start_date: data.start_date,
       end_date: data.end_date || undefined,
-      rent_amount: Number(data.rent_amount),
+      total_amount: Number(data.total_amount),
       frequency: data.frequency,
       status: data.status,
+      rental_type: data.rental_type,
     })
   }
 
@@ -209,11 +212,11 @@ function LeaseDetail() {
           <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="rent_amount"
+              name="total_amount"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Rent Amount <span className="text-destructive">*</span>
+                    Total Amount <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input type="number" step="0.01" {...field} />
@@ -247,28 +250,50 @@ function LeaseDetail() {
             />
           </div>
 
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status</FormLabel>
-                <FormControl>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="ended">Ended</SelectItem>
-                      <SelectItem value="paused">Paused</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+                control={form.control}
+                name="rental_type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Rental Type</FormLabel>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="lease">Lease</SelectItem>
+                        <SelectItem value="lease_to_own">Lease-to-Own</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="ended">Ended</SelectItem>
+                          <SelectItem value="paused">Paused</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+          </div>
 
           <div className="flex gap-4 justify-end">
             <Button

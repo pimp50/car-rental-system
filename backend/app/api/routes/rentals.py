@@ -29,6 +29,8 @@ def read_rentals(
     skip: int = 0,
     limit: int = 100,
     car_id: int | None = None,
+    payment_status: str | None = None,
+    rental_type: str | None = None,
 ) -> Any:
     """
     Retrieve rentals.
@@ -42,6 +44,14 @@ def read_rentals(
         statement = statement.join(Car).where(Car.car_id == car_id)
         count_statement = count_statement.join(Car).where(Car.car_id == car_id)
         
+    if payment_status:
+        statement = statement.where(CarRental.payment_status == payment_status)
+        count_statement = count_statement.where(CarRental.payment_status == payment_status)
+
+    if rental_type:
+        statement = statement.where(CarRental.rental_type == rental_type)
+        count_statement = count_statement.where(CarRental.rental_type == rental_type)
+
     count = session.exec(count_statement).one()
     statement = statement.offset(skip).limit(limit)
     rentals = session.exec(statement).all()

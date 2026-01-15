@@ -10,20 +10,31 @@ import { DataTableViewOptions } from "@/components/Common/DataTableViewOptions"
 import AddRental from "@/components/Rentals/AddRental"
 import { rentalColumns } from "@/components/Rentals/columns"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useDataTable } from "@/hooks/useDataTable"
 
 function getRentalsQueryOptions({
   skip,
   limit,
   car_id,
+  payment_status,
+  rental_type,
 }: {
   skip?: number
   limit?: number
   car_id?: number
+  payment_status?: string
+  rental_type?: string
 } = {}) {
   return {
-    queryFn: () => getRentals(skip, limit, car_id),
-    queryKey: ["rentals", { skip, limit, car_id }],
+    queryFn: () => getRentals(skip, limit, car_id, payment_status, rental_type),
+    queryKey: ["rentals", { skip, limit, car_id, payment_status, rental_type }],
   }
 }
 
@@ -34,6 +45,8 @@ export const Route = createFileRoute("/_layout/rentals/")({
 
 function Rentals() {
   const [carId, setCarId] = useState("")
+  const [paymentStatus, setPaymentStatus] = useState("all")
+  const [rentalType, setRentalType] = useState("all")
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -44,6 +57,8 @@ function Rentals() {
       skip: pagination.pageIndex * pagination.pageSize,
       limit: pagination.pageSize,
       car_id: carId ? parseInt(carId) : undefined,
+      payment_status: paymentStatus === "all" ? undefined : paymentStatus,
+      rental_type: rentalType === "all" ? undefined : rentalType,
     })
   )
 
@@ -84,6 +99,33 @@ function Rentals() {
                 onChange={(e) => setCarId(e.target.value)}
             />
             </div>
+            <Select
+              value={paymentStatus}
+              onValueChange={setPaymentStatus}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Payment Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Payment Status</SelectItem>
+                <SelectItem value="paid">Paid</SelectItem>
+                <SelectItem value="unpaid">Unpaid</SelectItem>
+                <SelectItem value="cancel">Cancel</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              value={rentalType}
+              onValueChange={setRentalType}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Rental Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Rental Types</SelectItem>
+                <SelectItem value="lease">Lease</SelectItem>
+                <SelectItem value="lease_to_own">Lease to Own</SelectItem>
+              </SelectContent>
+            </Select>
         </div>
 
         <div className="p-4">Loading rentals...</div>
@@ -154,6 +196,33 @@ function Rentals() {
             onChange={(e) => setCarId(e.target.value)}
           />
         </div>
+        <Select
+          value={paymentStatus}
+          onValueChange={setPaymentStatus}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Payment Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Payment Status</SelectItem>
+            <SelectItem value="paid">Paid</SelectItem>
+            <SelectItem value="unpaid">Unpaid</SelectItem>
+            <SelectItem value="cancel">Cancel</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select
+          value={rentalType}
+          onValueChange={setRentalType}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Rental Type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Rental Types</SelectItem>
+            <SelectItem value="lease">Lease</SelectItem>
+            <SelectItem value="lease_to_own">Lease to Own</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <DataTable 

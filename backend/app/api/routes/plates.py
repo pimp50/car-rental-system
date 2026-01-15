@@ -12,6 +12,7 @@ from app.models import (
     LicensePlateUpdate,
     LicensePlatesPublic,
     Message,
+    PlateLease,
 )
 
 
@@ -73,6 +74,23 @@ def update_license_plate(
     plate = session.get(LicensePlate, id)
     if not plate:
         raise HTTPException(status_code=404, detail="License plate not found")
+        
+    # Check if status is being updated
+    if plate_in.status and plate_in.status != plate.status:
+        # Check for unpaid leases
+        unpaid_leases = session.exec(
+            select(PlateLease).where(
+                PlateLease.plate_id == id,
+                PlateLease.payment_status == "unpaid"
+            )
+        ).first()
+        
+        if unpaid_leases:
+            raise HTTPException(
+                status_code=400, 
+                detail="Cannot update plate status: Plate has unpaid rentals"
+            )
+            
     update_dict = plate_in.model_dump(exclude_unset=True)
     plate.sqlmodel_update(update_dict)
     session.add(plate)
@@ -87,6 +105,21 @@ def delete_license_plate(session: SessionDep, current_user: CurrentUser, id: uui
     plate = session.get(LicensePlate, id)
     if not plate:
         raise HTTPException(status_code=404, detail="License plate not found")
+        
+    # Check for unpaid leases
+    unpaid_leases = session.exec(
+        select(PlateLease).where(
+            PlateLease.plate_id == id,
+            PlateLease.payment_status == "unpaid"
+        )
+    ).first()
+    
+    if unpaid_leases:
+        raise HTTPException(
+            status_code=400, 
+            detail="Cannot delete plate: Plate has unpaid rentals"
+        )
+        
     session.delete(plate)
     session.commit()
     return Message(message="License plate deleted successfully")

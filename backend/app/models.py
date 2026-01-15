@@ -225,22 +225,58 @@ class LicensePlatesPublic(SQLModel):
 class PlateLeaseBase(SQLModel):
     start_date: date
     end_date: date | None = None
-    rent_amount: float
+    total_amount: float = Field(default=0.0)
     frequency: str = Field(default="monthly", max_length=16)
     status: str = Field(default="active", max_length=32)
+    payment_status: str = Field(default="unpaid", max_length=16) # paid, unpaid, cancel
+    paid_amount: float = Field(default=0.0)
+    remaining_amount: float = Field(default=0.0)
+    rental_type: str = Field(default="lease", max_length=32) # lease
+    create_by: str | None = Field(default=None, max_length=255)
+    create_time: datetime | None = Field(default_factory=get_ny_time)
+    update_time: datetime | None = Field(default_factory=get_ny_time, sa_column_kwargs={"onupdate": get_ny_time})
 
 
 class PlateLeaseCreate(PlateLeaseBase):
     plate_id: uuid.UUID
     renter_id: uuid.UUID
+    total_amount: float # Override to make required
 
 
 class PlateLeaseUpdate(SQLModel):
     start_date: date | None = None
     end_date: date | None = None
-    rent_amount: float | None = None
+    total_amount: float | None = None
     frequency: str | None = Field(default=None, max_length=16)
     status: str | None = Field(default=None, max_length=32)
+    payment_status: str | None = None
+    paid_amount: float | None = None
+    remaining_amount: float | None = None
+    rental_type: str | None = None
+
+
+class PlatePaymentBase(SQLModel):
+    amount: float
+    payment_date: date
+    note: str | None = None
+    create_by: str | None = Field(default=None, max_length=255)
+    create_time: datetime | None = Field(default_factory=get_ny_time)
+
+
+class PlatePayment(PlatePaymentBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, sa_type=UUID())
+    lease_id: uuid.UUID = Field(foreign_key="platelease.id", nullable=False, ondelete="CASCADE", sa_type=UUID())
+    lease: "PlateLease" = Relationship(back_populates="payments")
+
+
+class PlatePaymentPublic(PlatePaymentBase):
+    id: uuid.UUID
+    lease_id: uuid.UUID
+
+
+class PlatePaymentsPublic(SQLModel):
+    data: list[PlatePaymentPublic]
+    count: int
 
 
 class PlateLease(PlateLeaseBase, table=True):
@@ -249,12 +285,15 @@ class PlateLease(PlateLeaseBase, table=True):
     renter_id: uuid.UUID = Field(foreign_key="renter.id", nullable=False, ondelete="CASCADE", sa_type=UUID())
     plate: LicensePlate | None = Relationship(back_populates="leases")
     renter: Renter | None = Relationship(back_populates="leases")
+    payments: list["PlatePayment"] = Relationship(back_populates="lease", cascade_delete=True)
 
 
 class PlateLeasePublic(PlateLeaseBase):
     id: uuid.UUID
     plate_id: uuid.UUID
     renter_id: uuid.UUID
+    plate_number: str | None = None
+    renter_name: str | None = None
 
 
 class PlateLeasesPublic(SQLModel):

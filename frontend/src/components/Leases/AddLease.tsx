@@ -48,9 +48,10 @@ const formSchema = z.object({
   renter_id: z.string().min(1),
   start_date: z.string().min(1),
   end_date: z.string().optional(),
-  rent_amount: z.string().min(1),
+  total_amount: z.string().min(1),
   frequency: z.string().min(1),
   status: z.string().min(1),
+  rental_type: z.string().min(1),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -77,11 +78,12 @@ const AddLease = () => {
     defaultValues: {
       plate_id: "",
       renter_id: "",
-      start_date: "",
-      end_date: "",
-      rent_amount: "0",
-      frequency: "monthly",
+      start_date: new Date().toISOString().split("T")[0],
+      end_date: new Date(new Date().setDate(new Date().getDate() + 6)).toISOString().split("T")[0],
+      total_amount: "",
+      frequency: "weekly",
       status: "active",
+      rental_type: "lease",
     },
   })
 
@@ -105,9 +107,10 @@ const AddLease = () => {
       renter_id: data.renter_id,
       start_date: data.start_date,
       end_date: data.end_date,
-      rent_amount: Number(data.rent_amount),
+      total_amount: Number(data.total_amount),
       frequency: data.frequency,
       status: data.status,
+      rental_type: data.rental_type,
     })
   }
 
@@ -130,36 +133,6 @@ const AddLease = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-4 py-4">
-              <FormField<FormData, "plate_id">
-                control={form.control}
-                name="plate_id"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Plate <span className="text-destructive">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Select
-                        defaultValue={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select plate" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {plates.map((p) => (
-                            <SelectItem key={p.id} value={p.id}>
-                              {p.plate_number}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <FormField<FormData, "renter_id">
                 control={form.control}
                 name="renter_id"
@@ -176,7 +149,7 @@ const AddLease = () => {
                         <SelectTrigger>
                           <SelectValue placeholder="Select renter" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-h-[200px]">
                           {renters.map((r) => (
                             <SelectItem key={r.id} value={r.id}>
                               {r.full_name}
@@ -190,48 +163,132 @@ const AddLease = () => {
                 )}
               />
 
-              <FormField<FormData, "start_date">
+              <FormField<FormData, "plate_id">
                 control={form.control}
-                name="start_date"
+                name="plate_id"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Start Date <span className="text-destructive">*</span>
+                      Plate <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="YYYY-MM-DD"
-                        type="date"
-                        {...field}
-                        required
-                      />
+                      <Select
+                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select plate" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-[200px]">
+                          {plates.map((p) => (
+                            <SelectItem key={p.id} value={p.id}>
+                              {p.plate_number}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <FormField<FormData, "end_date">
-                control={form.control}
-                name="end_date"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>End Date</FormLabel>
-                    <FormControl>
-                      <Input placeholder="YYYY-MM-DD" type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <FormField<FormData, "rental_type">
+                  control={form.control}
+                  name="rental_type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Rental Type</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="lease">Lease</SelectItem>
+                          <SelectItem value="lease_to_own">Lease-to-Own</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField<FormData, "frequency">
+                  control={form.control}
+                  name="frequency"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Frequency</FormLabel>
+                      <FormControl>
+                        <Select
+                          defaultValue={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select frequency" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="monthly">Monthly</SelectItem>
+                            <SelectItem value="weekly">Weekly</SelectItem>
+                            <SelectItem value="daily">Daily</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-              <FormField<FormData, "rent_amount">
+              <div className="grid grid-cols-2 gap-4">
+                <FormField<FormData, "start_date">
+                  control={form.control}
+                  name="start_date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Start Date <span className="text-destructive">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="YYYY-MM-DD"
+                          type="date"
+                          {...field}
+                          required
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField<FormData, "end_date">
+                  control={form.control}
+                  name="end_date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>End Date</FormLabel>
+                      <FormControl>
+                        <Input placeholder="YYYY-MM-DD" type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField<FormData, "total_amount">
                 control={form.control}
-                name="rent_amount"
+                name="total_amount"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="w-1/2">
                     <FormLabel>
-                      Rent Amount <span className="text-destructive">*</span>
+                      Total Amount <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -241,58 +298,6 @@ const AddLease = () => {
                         {...field}
                         required
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField<FormData, "frequency">
-                control={form.control}
-                name="frequency"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Frequency</FormLabel>
-                    <FormControl>
-                      <Select
-                        defaultValue={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select frequency" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="monthly">monthly</SelectItem>
-                          <SelectItem value="weekly">weekly</SelectItem>
-                          <SelectItem value="daily">daily</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField<FormData, "status">
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <FormControl>
-                      <Select
-                        defaultValue={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="active">active</SelectItem>
-                          <SelectItem value="ended">ended</SelectItem>
-                          <SelectItem value="paused">paused</SelectItem>
-                        </SelectContent>
-                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

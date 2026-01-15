@@ -45,12 +45,16 @@ export const getRentals = async (
   skip = 0,
   limit = 100,
   car_id?: number,
+  payment_status?: string,
+  rental_type?: string,
 ): Promise<CarRentalsPublic> => {
   const { data } = await client.get("/api/v1/rentals", {
     params: {
       skip,
       limit,
       car_id,
+      payment_status,
+      rental_type,
     },
   })
   return data

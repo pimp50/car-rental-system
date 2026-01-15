@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 import { Search } from "lucide-react"
 import { useState } from "react"
 
@@ -50,9 +50,8 @@ function Leases() {
     pageIndex: 0,
     pageSize: 10,
   })
-  const navigate = useNavigate()
 
-  const { data: leases, isPending } = useQuery(
+  const { data: leases, isPending, error } = useQuery(
     getLeasesQueryOptions({
       plate_number: plateNumber || undefined,
       renter_name: renterName || undefined,
@@ -61,6 +60,11 @@ function Leases() {
       limit: pagination.pageSize,
     }),
   )
+
+  if (error) {
+      console.error("Failed to fetch leases:", error)
+      return <div className="p-4 text-red-500">Error loading leases: {error.message}</div>
+  }
 
   const table = useDataTable({
     data: leases?.data ?? [],
@@ -209,7 +213,6 @@ function Leases() {
 
       <DataTable
         table={table}
-        onRowClick={(row) => navigate({ to: "/leases/$leaseId", params: { leaseId: row.id } })}
       />
     </div>
   )

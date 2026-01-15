@@ -177,9 +177,9 @@ function PlateDetail() {
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="available">available</SelectItem>
-                      <SelectItem value="rented">rented</SelectItem>
-                      <SelectItem value="inactive">inactive</SelectItem>
+                      <SelectItem value="available">Available</SelectItem>
+                      <SelectItem value="rented">Rented</SelectItem>
+                      <SelectItem value="inactive">Inactive</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>

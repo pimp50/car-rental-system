@@ -52,7 +52,8 @@ function Plates() {
     data: plates?.data ?? [],
     columns: plateColumns,
     pageCount: plates?.count,
-    id: "plates-table"
+    id: "plates-table",
+    initialVisibility: { id: false },
   })
 
   if (isPending) {
