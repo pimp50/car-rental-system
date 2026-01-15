@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Plus } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { createCar, type CarCreate } from "@/api/cars"
+import { createCar, getCars, type CarCreate } from "@/api/cars"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -39,6 +39,7 @@ import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
 
 const formSchema = z.object({
+  car_id: z.string().optional(),
   model: z.string().min(1, "Model is required"),
   wav: z.boolean(),
   marker: z.string().optional(),
@@ -67,9 +68,17 @@ const AddCar = () => {
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
 
+  // Fetch cars to calculate next ID
+  const { data: cars } = useQuery({
+    queryKey: ["cars", "all-for-id"],
+    queryFn: () => getCars(0, 10000), // Fetch all cars to find max ID
+    enabled: isOpen,
+  })
+
   const form = useForm<FormData>({
     resolver: zodResolver<FormData, any, FormData>(formSchema),
     defaultValues: {
+      car_id: "",
       model: "",
       wav: false,
       marker: "premium",
@@ -88,6 +97,18 @@ const AddCar = () => {
     },
   })
 
+  // Update default car_id when cars data is loaded
+  if (isOpen && cars && !form.getValues("car_id")) {
+      const maxId = cars.data.reduce((max, car) => {
+          return Math.max(max, car.car_id || 0)
+      }, 0)
+      const nextId = (maxId + 1).toString()
+      // Only set if field is not dirty (user hasn't typed anything)
+      if (!form.formState.dirtyFields.car_id) {
+        form.setValue("car_id", nextId)
+      }
+  }
+
   const mutation = useMutation({
     mutationFn: (data: CarCreate) => createCar(data),
     onSuccess: () => {
@@ -104,6 +125,7 @@ const AddCar = () => {
   const onSubmit = (data: FormData) => {
     mutation.mutate({
       ...data,
+      car_id: data.car_id ? Number(data.car_id) : undefined,
       year: Number(data.year),
       price: Number(data.price),
       wav: data.wav ? 1 : 0,
@@ -136,6 +158,19 @@ const AddCar = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
+                <FormField<FormData, "car_id">
+                  control={form.control}
+                  name="car_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Car ID (Auto-generated)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField<FormData, "model">
                   control={form.control}
                   name="model"

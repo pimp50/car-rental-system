@@ -9,18 +9,21 @@ import { DataTable } from "@/components/Common/DataTable"
 import { DataTableViewOptions } from "@/components/Common/DataTableViewOptions"
 import AddRental from "@/components/Rentals/AddRental"
 import { rentalColumns } from "@/components/Rentals/columns"
+import { Input } from "@/components/ui/input"
 import { useDataTable } from "@/hooks/useDataTable"
 
 function getRentalsQueryOptions({
   skip,
   limit,
+  car_id,
 }: {
   skip?: number
   limit?: number
+  car_id?: number
 } = {}) {
   return {
-    queryFn: () => getRentals(skip, limit),
-    queryKey: ["rentals", { skip, limit }],
+    queryFn: () => getRentals(skip, limit, car_id),
+    queryKey: ["rentals", { skip, limit, car_id }],
   }
 }
 
@@ -30,6 +33,7 @@ export const Route = createFileRoute("/_layout/rentals/")({
 })
 
 function Rentals() {
+  const [carId, setCarId] = useState("")
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -39,6 +43,7 @@ function Rentals() {
     getRentalsQueryOptions({
       skip: pagination.pageIndex * pagination.pageSize,
       limit: pagination.pageSize,
+      car_id: carId ? parseInt(carId) : undefined,
     })
   )
 
@@ -47,7 +52,7 @@ function Rentals() {
     columns: rentalColumns,
     pageCount: rentals ? Math.ceil(rentals.count / pagination.pageSize) : 0,
     id: "rentals-table",
-    initialVisibility: { id: false },
+    initialVisibility: { id: false, update_time: false },
     pagination,
     onPaginationChange: setPagination,
   })
@@ -67,12 +72,26 @@ function Rentals() {
             <AddRental />
           </div>
         </div>
+        
+        <div className="flex items-center gap-4">
+            <div className="relative max-w-sm flex-1">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+                type="search"
+                placeholder="Search by Car ID..."
+                className="pl-8"
+                value={carId}
+                onChange={(e) => setCarId(e.target.value)}
+            />
+            </div>
+        </div>
+
         <div className="p-4">Loading rentals...</div>
       </div>
     )
   }
 
-  if (rentals && rentals.data.length === 0) {
+  if (rentals && rentals.data.length === 0 && !carId) {
     return (
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
@@ -121,6 +140,19 @@ function Rentals() {
         <div className="flex items-center gap-2">
           <DataTableViewOptions table={table} />
           <AddRental />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <div className="relative max-w-sm flex-1">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Search by Car ID..."
+            className="pl-8"
+            value={carId}
+            onChange={(e) => setCarId(e.target.value)}
+          />
         </div>
       </div>
 

@@ -13,6 +13,7 @@ export type CarRentalPublic = {
   payment_status: string
   paid_amount: number
   remaining_amount: number
+  rental_type: string
   create_time?: string | null
   update_time?: string | null
   create_by?: string | null
@@ -31,6 +32,7 @@ export type CarRentalCreate = {
   total_amount: number
   frequency?: string
   status?: string
+  rental_type?: string
 }
 
 export type CarRentalUpdate = Partial<CarRentalCreate> & {
@@ -42,11 +44,13 @@ export type CarRentalUpdate = Partial<CarRentalCreate> & {
 export const getRentals = async (
   skip = 0,
   limit = 100,
+  car_id?: number,
 ): Promise<CarRentalsPublic> => {
   const { data } = await client.get("/api/v1/rentals", {
     params: {
       skip,
       limit,
+      car_id,
     },
   })
   return data
@@ -74,6 +78,11 @@ export const updateRental = async (
 
 export const deleteRental = async (id: string): Promise<void> => {
   await client.delete(`/api/v1/rentals/${id}`)
+}
+
+export const freezeRental = async (id: string): Promise<CarRentalPublic> => {
+  const { data } = await client.post(`/api/v1/rentals/${id}/freeze`)
+  return data
 }
 
 export const payRental = async (id: string, amount: number, payment_date: string, note?: string): Promise<CarRentalPublic> => {

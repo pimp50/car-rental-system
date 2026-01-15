@@ -30,6 +30,7 @@ export type CarPublic = {
 export type CarsPublic = { data: CarPublic[]; count: number }
 
 export type CarCreate = {
+  car_id?: number | null
   model: string
   wav?: number
   marker?: string

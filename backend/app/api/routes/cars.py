@@ -88,15 +88,26 @@ def create_car(*, session: SessionDep, current_user: CurrentUser, car_in: CarCre
     car.create_time = datetime.utcnow()
     car.update_time = datetime.utcnow()
     
-    # Manually handle autoincrement for SQLite since it doesn't support it on non-PK columns easily
-    # We find the max car_id and add 1
-    # Note: This is not race-condition safe in high concurrency, but fine for this scale/SQLite
-    try:
-        max_id = session.exec(select(func.max(Car.car_id))).one()
-        car.car_id = (max_id or 0) + 1
-    except Exception:
-        # Fallback or if table is empty
-        car.car_id = 1
+    # Manually handle autoincrement logic if car_id is provided or not
+    if car_in.car_id is not None:
+        # User provided a specific ID, check if it exists
+        existing_id_car = session.exec(select(Car).where(Car.car_id == car_in.car_id)).first()
+        if existing_id_car:
+            raise HTTPException(
+                status_code=400,
+                detail=f"A car with ID '{car_in.car_id}' already exists."
+            )
+        car.car_id = car_in.car_id
+    else:
+        # Auto-increment logic
+        # We find the max car_id and add 1
+        # Note: This is not race-condition safe in high concurrency, but fine for this scale/SQLite
+        try:
+            max_id = session.exec(select(func.max(Car.car_id))).one()
+            car.car_id = (max_id or 0) + 1
+        except Exception:
+            # Fallback or if table is empty
+            car.car_id = 1
         
     session.add(car)
     session.commit()

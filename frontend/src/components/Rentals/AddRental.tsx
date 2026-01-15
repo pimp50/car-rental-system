@@ -48,6 +48,7 @@ const formSchema = z.object({
   total_amount: z.string().min(1, "Total amount is required"),
   frequency: z.string().default("monthly"),
   status: z.string().default("active"),
+  rental_type: z.string().default("lease"),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -75,12 +76,70 @@ const AddRental = () => {
       car_id: "",
       renter_id: "",
       start_date: new Date().toISOString().split("T")[0],
-      end_date: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().split("T")[0],
+      end_date: new Date(new Date().setDate(new Date().getDate() + 6)).toISOString().split("T")[0],
       total_amount: "",
-      frequency: "monthly",
+      frequency: "weekly",
       status: "active",
+      rental_type: "lease",
     },
   })
+
+  // Watch for changes in rental_type and car_id
+  const rentalType = form.watch("rental_type")
+  const carId = form.watch("car_id")
+
+  // Effect to auto-populate total_amount when lease_to_own is selected
+  useQuery({
+    queryKey: ["car-details", carId],
+    queryFn: async () => {
+        if (!carId) return null
+        const selectedCar = cars?.data.find(c => c.id === carId)
+        return selectedCar
+    },
+    enabled: !!carId && rentalType === "lease_to_own",
+  })
+
+  // We can't use useQuery effect directly to set form value cleanly, so let's use a useEffect
+  // dependent on rentalType and carId changes, or handle it in the onChange handler.
+  // Using useEffect is simpler here.
+  
+  const { setValue } = form
+  
+  const handleRentalTypeChange = (value: string) => {
+    setValue("rental_type", value)
+    
+    if (value === "lease_to_own" && carId) {
+        const selectedCar = cars?.data.find(c => c.id === carId)
+        if (selectedCar) {
+            const total = (selectedCar.price || 0) + 
+                          (selectedCar.installation_fee_for_safety_equipment || 0) +
+                          (selectedCar.insurance_expenses || 0) +
+                          (selectedCar.service_expenses || 0) +
+                          (selectedCar.maintenance_costs || 0) +
+                          (selectedCar.full_coverage_auto_insurance || 0) +
+                          (selectedCar.other_expenses || 0)
+            setValue("total_amount", total.toFixed(2))
+        }
+    }
+  }
+
+  // Also update if car changes while lease_to_own is selected
+  const handleCarChange = (value: string) => {
+    setValue("car_id", value)
+    if (form.getValues("rental_type") === "lease_to_own") {
+         const selectedCar = cars?.data.find(c => c.id === value)
+         if (selectedCar) {
+            const total = (selectedCar.price || 0) + 
+                          (selectedCar.installation_fee_for_safety_equipment || 0) +
+                          (selectedCar.insurance_expenses || 0) +
+                          (selectedCar.service_expenses || 0) +
+                          (selectedCar.maintenance_costs || 0) +
+                          (selectedCar.full_coverage_auto_insurance || 0) +
+                          (selectedCar.other_expenses || 0)
+            setValue("total_amount", total.toFixed(2))
+        }
+    }
+  }
 
   const mutation = useMutation({
     mutationFn: (data: CarRentalCreate) => createRental(data),
@@ -127,7 +186,7 @@ const AddRental = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Car</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={handleCarChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a car" />
@@ -172,41 +231,24 @@ const AddRental = () => {
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="start_date"
+                name="rental_type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Start Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="end_date"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>End Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="total_amount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Total Amount</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} />
-                    </FormControl>
+                    <FormLabel>Rental Type</FormLabel>
+                    <Select
+                      onValueChange={handleRentalTypeChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="lease">Lease</SelectItem>
+                        <SelectItem value="lease_to_own">Lease-to-Own</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -238,6 +280,47 @@ const AddRental = () => {
                 )}
               />
             </div>
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="start_date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Start Date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="end_date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>End Date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormField
+               control={form.control}
+               name="total_amount"
+               render={({ field }) => (
+                 <FormItem className="w-1/2">
+                   <FormLabel>Total Amount</FormLabel>
+                   <FormControl>
+                     <Input type="number" step="0.01" {...field} />
+                   </FormControl>
+                   <FormMessage />
+                 </FormItem>
+               )}
+             />
             <DialogFooter>
               <DialogClose asChild>
                 <Button variant="outline" disabled={mutation.isPending}>

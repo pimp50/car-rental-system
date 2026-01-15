@@ -3,6 +3,7 @@ import {
   Briefcase,
   CalendarClock,
   Car,
+  KeyRound,
   Contact,
   Home,
   Users,
@@ -27,7 +28,7 @@ const baseItems: Item[] = [
   { icon: BadgeCheck, title: "Plates", path: "/plates" },
   { icon: Contact, title: "Renters", path: "/renters" },
   { icon: CalendarClock, title: "Plate Rentals", path: "/leases" },
-  { icon: Car, title: "Car Rentals", path: "/rentals" },
+  { icon: KeyRound, title: "Car Rentals", path: "/rentals" },
 ]
 
 export function AppSidebar() {

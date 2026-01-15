@@ -285,7 +285,7 @@ class CarBase(SQLModel):
     notes: str | None = Field(default=None, max_length=255)
 
 class CarCreate(CarBase):
-    pass
+    car_id: int | None = None
 
 class CarUpdate(SQLModel):
     model: str | None = Field(default=None, min_length=1, max_length=255)
@@ -336,6 +336,7 @@ class CarRentalBase(SQLModel):
     payment_status: str = Field(default="unpaid", max_length=16) # paid, unpaid
     paid_amount: float = Field(default=0.0)
     remaining_amount: float = Field(default=0.0)
+    rental_type: str = Field(default="lease", max_length=32) # lease, lease_to_own
     create_by: str | None = Field(default=None, max_length=255)
     create_time: datetime | None = Field(default_factory=get_ny_time)
     update_time: datetime | None = Field(default_factory=get_ny_time, sa_column_kwargs={"onupdate": get_ny_time})
@@ -347,6 +348,7 @@ class CarRentalCreate(SQLModel):
     end_date: date | None = None
     total_amount: float
     frequency: str = "monthly"
+    rental_type: str = "lease"
 
 class CarRentalUpdate(SQLModel):
     start_date: date | None = None
@@ -357,6 +359,7 @@ class CarRentalUpdate(SQLModel):
     payment_status: str | None = None
     paid_amount: float | None = None
     remaining_amount: float | None = None
+    rental_type: str | None = None
 
 class CarRental(CarRentalBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, sa_type=UUID())

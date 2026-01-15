@@ -6,7 +6,7 @@ import { Check, Copy } from "lucide-react"
 import type { CarRentalPublic } from "@/api/rentals"
 import { Button } from "@/components/ui/button"
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard"
-import { RentalActionsMenu } from "./RentalActionsMenu"
+import { RentalActionsMenu, RentalOperations } from "./RentalActionsMenu"
 import { DataTableColumnHeader } from "@/components/Common/DataTableColumnHeader"
 
 function CopyId({ id }: { id: string }) {
@@ -103,27 +103,23 @@ export const rentalColumns: ColumnDef<CarRentalPublic>[] = [
     ),
     cell: ({ row }) => {
       const status = row.original.payment_status
+      let className = "bg-gray-100 text-gray-800"
+      if (status === "paid") {
+        className = "bg-green-100 text-green-800"
+      } else if (status === "unpaid") {
+        className = "bg-red-100 text-red-800"
+      } else if (status === "cancel") {
+        className = "bg-yellow-100 text-yellow-800"
+      }
+
       return (
         <span
-          className={`px-2 py-1 rounded-full text-xs font-semibold ${
-            status === "paid"
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
-          }`}
+          className={`px-2 py-1 rounded-full text-xs font-semibold ${className}`}
         >
           {status.toUpperCase()}
         </span>
       )
     },
-  },
-  {
-    id: "actions",
-    header: "Operation",
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <RentalActionsMenu rental={row.original} />
-      </div>
-    ),
   },
   {
     accessorKey: "update_time",
@@ -136,6 +132,38 @@ export const rentalColumns: ColumnDef<CarRentalPublic>[] = [
           ? format(new Date(row.original.update_time), "yyyy-MM-dd HH:mm") 
           : "-"}
       </span>
+    ),
+  },
+  {
+    id: "operations",
+    header: "Operation",
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <RentalOperations rental={row.original} />
+      </div>
+    ),
+  },
+  {
+    accessorKey: "rental_type",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Rental Type" />
+    ),
+    cell: ({ row }) => {
+      const type = row.original.rental_type
+      return (
+        <span>
+          {type === "lease_to_own" ? "Lease-to-Own" : "Lease"}
+        </span>
+      )
+    },
+  },
+  {
+    id: "actions",
+    header: "",
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <RentalActionsMenu rental={row.original} />
+      </div>
     ),
   },
 ]

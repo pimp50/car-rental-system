@@ -28,14 +28,22 @@ def read_rentals(
     current_user: CurrentUser,
     skip: int = 0,
     limit: int = 100,
+    car_id: int | None = None,
 ) -> Any:
     """
     Retrieve rentals.
     """
     _ = current_user
+    
+    statement = select(CarRental)
     count_statement = select(func.count()).select_from(CarRental)
+    
+    if car_id is not None:
+        statement = statement.join(Car).where(Car.car_id == car_id)
+        count_statement = count_statement.join(Car).where(Car.car_id == car_id)
+        
     count = session.exec(count_statement).one()
-    statement = select(CarRental).offset(skip).limit(limit)
+    statement = statement.offset(skip).limit(limit)
     rentals = session.exec(statement).all()
     
     # Enrich rentals with car and renter info
@@ -260,6 +268,41 @@ def read_rental_payments(
     payments = session.exec(statement).all()
     
     return RentalPaymentsPublic(data=payments, count=count)
+
+
+@router.post("/{id}/freeze", response_model=CarRentalPublic)
+def freeze_rental(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -> Any:
+    """
+    Freeze a rental (cancel payment status, free the car).
+    """
+    _ = current_user
+    rental = session.get(CarRental, id)
+    if not rental:
+        raise HTTPException(status_code=404, detail="Rental not found")
+        
+    # Update rental status
+    rental.payment_status = "cancel"
+    rental.update_time = get_ny_time()
+    
+    # Free the car
+    if rental.car_id:
+        car = session.get(Car, rental.car_id)
+        if car:
+            car.status = "available"
+            session.add(car)
+            
+    session.add(rental)
+    session.commit()
+    session.refresh(rental)
+    
+    public_rental = CarRentalPublic.model_validate(rental)
+    if rental.car:
+        public_rental.car_model = rental.car.model
+        public_rental.car_short_id = rental.car.car_id
+    if rental.renter:
+        public_rental.renter_name = rental.renter.full_name
+        
+    return public_rental
 
 
 @router.delete("/{id}")
