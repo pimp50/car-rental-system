@@ -22,10 +22,10 @@ export function Footer() {
     <footer className="border-t py-4 px-6">
       <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
         <p className="text-muted-foreground text-sm">
-          Car Rental System - {currentYear}
+          Top Notch Rental - {currentYear}
         </p>
         <div className="flex items-center gap-4">
-          {socialLinks.map(({ icon: Icon, href, label }) => (
+          {/* {socialLinks.map(({ icon: Icon, href, label }) => (
             <a
               key={label}
               href={href}
@@ -36,7 +36,7 @@ export function Footer() {
             >
               <Icon className="h-5 w-5" />
             </a>
-          ))}
+          ))} */}
         </div>
       </div>
     </footer>
